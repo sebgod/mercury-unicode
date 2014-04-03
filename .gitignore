@@ -1,0 +1,13 @@
+Mercury/
+ucd_compiler
+ucd_type_compiler
+.*.swp
+tags
+*.mh
+*.err
+*.init
+*.dll
+*.exe
+*.a
+*.so
+*.dylib
