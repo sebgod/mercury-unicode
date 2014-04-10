@@ -111,13 +111,12 @@ type_alias_fact(TypeName, EnumValues, !FactMap) :-
     Facts = map.foldr(
         (func(Key, Aliases,  A0) = A ++ A0 :-
             Prefix = quote_atom_name(TypeName, Key),
-            A = to_sorted_list(set.map( (func(Alias) =
-                s(string.format("%s_alias(%s, %s)",
+            A = to_sorted_list(set.map( (func(Alias) = s(AliasDef) :-
+                AliasDef = string.format("%s_alias(%s, %s)",
                     [s(TypeName),
                      s(Prefix),
                      s(quoted_string(Alias))
                     ])
-                 )
                 ), Aliases)
             )
         ), EnumValues, []
