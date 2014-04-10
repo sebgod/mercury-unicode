@@ -89,18 +89,6 @@
 :- mode filter_char `with_inst` filter_pred_in.
 :- mode filter_char `with_inst` filter_pred_out.
 
-:- pred filter_not `with_type` filter(string).
-:- mode filter_not `with_inst` filter_pred_in.
-:- mode filter_not `with_inst` filter_pred_out.
-
-:- pred filter_not_chars `with_type` filter(chars).
-:- mode filter_not_chars `with_inst` filter_pred_in.
-:- mode filter_not_chars `with_inst` filter_pred_out.
-
-:- pred filter_not_char `with_type` filter(char).
-:- mode filter_not_char `with_inst` filter_pred_in.
-:- mode filter_not_char `with_inst` filter_pred_out.
-
 :- pred parse_error(string, string, string, chars, io, io).
 :- mode parse_error(in, in, in, in, di, uo) is erroneous.
 
@@ -109,7 +97,7 @@
 
 :- implementation.
 
-:- import_module require, int, string.
+:- import_module require, int, string, std_util.
 
 %------------------------------------------------------------------------------%
 
@@ -149,23 +137,11 @@ filter_chars(Filter, Word) -->
 
 filter_char(Filter, Char) --> [Char], { Filter(Char) }.
 
-filter_not(Filter, string.from_char_list(Chars)) -->
-    filter_not_chars(Filter, Chars).
-
-filter_not_chars(Filter, Word) -->
-    (   filter_not_char(Filter, C)
-    ->  {   Word = [C | Rest] },
-        filter_not_chars(Filter, Rest)
-    ;   {   Word = [] }
-    ).
-
-filter_not_char(Filter, Char) --> [Char], { not Filter(Char) }.
-
-any(Any) --> filter_not(char.is_noncharacter, Any).
+any(Any) --> filter(isnt(char.is_noncharacter), Any).
 
 junk --> any(_).
 
-until(Sep, Match) --> filter_not(contains(Sep), Match).
+until(Sep, Match) --> filter(isnt(contains(Sep)), Match).
 
 ws_char --> filter_char(char.is_whitespace, _).
 
@@ -209,7 +185,7 @@ hex_number(Hex) --> hex_digit(Digit), hex_number2(Digit, Hex).
 
 identifier(Identifier) --> filter(char.is_alnum_or_underscore, Identifier).
 
-word(Word) --> filter_not(char.is_whitespace, Word).
+word(Word) --> filter(isnt(char.is_whitespace), Word).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
