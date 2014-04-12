@@ -13,7 +13,7 @@ libucd: copy
 	$(SUBMAKE) libucd
 
 copy:
-	cp -u *.m build
+	cp -u src/*.m build
 
 update:
 	$(SUBMAKE) update
