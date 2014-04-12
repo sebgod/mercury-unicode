@@ -10,11 +10,21 @@
 
 :- interface.
 
-:- import_module ucd_types, charset.
+:- import_module char, ucd_types, charset.
 
 :- include_module ucd.scripts.
 
+% ucd.script_charset(Script) = Charset:
+%   Charset unifies with the codensed set of all valid chars from the given
+%   Unicode script.
+%
+%   Throws an exception iff the script contains no characters (not all scripts
+%   have Unicode characters assigned).
 :- func script_charset(sc) = charset is det.
+
+% ucd.char_block(Char) = Block:
+%   Block unifies with the Unicode character block containing the Char.
+:- func char_block(char) = blk is det.
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
@@ -22,7 +32,7 @@
 :- implementation.
 
 :- import_module ucd.scripts.
-:- import_module char, string.
+:- import_module string.
 :- import_module sparse_bitset, list.
 :- import_module ucd_types.sc.
 :- import_module require.
@@ -40,6 +50,12 @@ script_charset(Script) = Charset :-
         sc_alias(Script, ScriptName),
         unexpected($file, $pred, "No chars for script " ++
             ScriptName ++ " specified!")
+    ).
+
+char_block(Char) = Block :-
+    (
+        unexpected($file, $pred, format("%c is not in any Unicode block!",
+            [c(Char)]))
     ).
 
 %------------------------------------------------------------------------------%
