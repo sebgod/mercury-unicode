@@ -6,28 +6,35 @@ endif
 MCFLAGS=--use-grade-subdirs
 # --debug --stack-segments
 
-SUBMAKE :=cd build && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
-.PHONY: all clean update install sinstall libucd realclean copy
+BUILD_MAKE:=cd build && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
+DOCS_MAKE:=cd docs && make
+.PHONY: all clean update install sinstall libucd realclean copy docs
 
 libucd: copy
-	$(SUBMAKE) libucd
+	$(BUILD_MAKE) libucd
 
 copy:
 	cp -u src/*.m build
 
 update:
-	$(SUBMAKE) update
+	$(BUILD_MAKE) update
 
 all: copy update libucd
 
 install: libucd
-	$(SUBMAKE) install
+	$(BUILD_MAKE) install
 
 sinstall: libucd
-	$(SUBMAKE) sinstall
+	$(BUILD_MAKE) sinstall
 
 clean:
-	$(SUBMAKE) clean
+	$(BUILD_MAKE) clean
+	$(DOCS_MAKE) clean
 
 realclean:
-	$(SUBMAKE) realclean
+	$(BUILD_MAKE) realclean
+	$(DOCS_MAKE) clean
+
+docs:
+	$(DOCS_MAKE) all
+	
