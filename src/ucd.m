@@ -13,6 +13,7 @@
 :- import_module char, ucd_types, charset.
 
 :- include_module ucd.scripts.
+:- include_module ucd.normalisation.
 
 % ucd.script_charset(Script) = Charset:
 %   Charset unifies with the codensed set of all valid chars from the given
