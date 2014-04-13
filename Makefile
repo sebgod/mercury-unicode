@@ -19,7 +19,7 @@ copy:
 update:
 	$(BUILD_MAKE) update
 
-all: copy update libucd
+all: copy update libucd docs
 
 install: libucd
 	$(BUILD_MAKE) install
