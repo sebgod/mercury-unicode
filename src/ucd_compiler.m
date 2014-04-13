@@ -28,6 +28,7 @@
 :- import_module ucd_processor.
 :- import_module process_scripts.
 :- import_module process_blocks.
+:- import_module process_unicode_data.
 
 %------------------------------------------------------------------------------%
 
@@ -41,6 +42,7 @@ main(!IO) :-
 
 ucd_parsers("ucd.blocks", process_blocks).
 ucd_parsers("ucd.scripts", process_scripts).
+ucd_parsers("ucd.unicode_data", process_unicode_data).
 
 :- pred compile_ucd_file(artifact::in, io::di, io::uo) is det.
 

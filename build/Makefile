@@ -14,7 +14,7 @@ UCD_TYPE_COMPILER_DEPS := $(COMMON_DEPS) ucd_type_compiler.m charset.m
 .PHONY: all clean update install sinstall libucd realclean
 .PRECIOUS: %.txt
 
-libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m normalisation.m
+libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
 	$(MMC) $(MCFLAGS) -m $@
 
 ucd_type_compiler: $(UCD_TYPE_COMPILER_DEPS)
