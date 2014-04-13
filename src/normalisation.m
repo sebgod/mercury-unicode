@@ -27,7 +27,24 @@
 
 %------------------------------------------------------------------------------%
 
-normalise(String, _Form) = String.
+:- func canonical_decompose(string) = string.
+
+canonical_decompose(String) = String.
+
+:- func canonical_compose(string) = string.
+
+canonical_compose(String) = String.
+
+:- func compatibility_decompose(string) = string.
+
+compatibility_decompose(String) = String.
+
+normalise(String, Form) = Norm :-
+    (   Form = nfd  -> Norm = canonical_decompose(String)
+    ;   Form = nfc  -> Norm = canonical_compose(canonical_decompose(String))
+    ;   Form = nfkd -> Norm = compatibility_decompose(String)
+    ;   Norm = canonical_compose(compatibility_decompose(String))
+    ).
 
 %------------------------------------------------------------------------------%
 % -*- Mode: Mercury; column: 80; indent-tabs-mode: nil; tabs-width: 4 -*-
