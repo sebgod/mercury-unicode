@@ -67,9 +67,7 @@ parse_type_with_aliases(!Map) -->
         separator,
         value_name(ValueName),
         {
-            (   Kind = "gc", ValueName = "LC" -> Aliases0 = ["LC", "L&"]
-            ;   Aliases0 = [ValueName]
-            )
+            Aliases0 = [ValueName]
         },
         aliases(Aliases0, Aliases1),
         {
