@@ -7,7 +7,7 @@ MCFLAGS=--use-grade-subdirs
 # --debug --stack-segments
 
 BUILD_MAKE:=cd build && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
-DOCS_MAKE:=cd docs && make
+DOCS_MAKE:=cd docs && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
 .PHONY: all clean update install sinstall libucd realclean copy docs
 
 libucd: copy
