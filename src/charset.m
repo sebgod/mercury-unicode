@@ -14,10 +14,14 @@
 :- import_module sparse_bitset.
 :- import_module list.
 
+:- type range ---> range(int, int).
 :- type charset == sparse_bitset(char).
 
 :- func charset_from_list(list(char)) = charset.
-:- func charset_from_range(int, int) = charset.
+:- func charset_from_range(range) = charset.
+
+:- type charset_range == pred(int, int).
+:- inst charset_range_pred == (pred(out, out) is multi).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
@@ -30,7 +34,7 @@
 
 charset_from_list(CharList) = sparse_bitset.sorted_list_to_set(CharList).
 
-charset_from_range(Start, End) =
+charset_from_range(range(Start, End)) =
     charset_from_list(list.map(char.det_from_int, Start `..` End)).
 
 %------------------------------------------------------------------------------%

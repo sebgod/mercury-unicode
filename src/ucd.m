@@ -42,7 +42,7 @@
 script_charset(Script) = Charset :-
     ( if ScriptRange = script_range(Script) then
         solutions((pred(RangeSet::out) is multi :-
-            ScriptRange(_, Start, End),
+            ScriptRange(Start, End),
             CharList = map(char.det_from_int, Start `..` End),
             RangeSet = sorted_list_to_set(CharList)
         ), RangeSets),
