@@ -48,10 +48,16 @@ clean:
 	rm -f ucd_type_compiler
 	rm -f *.err
 	rm -f *.mh
+	rm -f *.init
 	rm -fR Mercury/
 	rm -f ucd.*.m
 	rm -f ucd_types.m
 	rm -f ucd_types.*.m
+	rm -f *.jar
+	rm -f *.dll
+	rm -f *.so
+	rm -f *.a
+	rm -f *.dylib
 
 realclean: clean
 	rm -f *.txt
