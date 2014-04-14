@@ -47,20 +47,17 @@
 :- mode parse_char_properties `with_inst` parser2_pred.
 
 parse_char_properties(!Map) -->
-    (   ['#'] -> junk
-    ;   ws    -> { true }
-    ;   hex_number(Char),
-        separator,
-        until_separator(Name),
-        separator,
-        value_name_no_ws(GCName),
-        %ws, ['#'],
-        junk,
-        {
-            gc_alias(GC, GCName),
-            !:Map = !.Map^elem(Char) := props(Name, GC)
-        }
-    ).
+    hex_number(Char),
+    separator,
+    until_separator(Name),
+    separator,
+    value_name_no_ws(GCName),
+    %ws, ['#'],
+    junk,
+    {
+        gc_alias(GC, GCName),
+        !:Map = !.Map^elem(Char) := props(Name, GC)
+    }.
 
 :- func switch_line(string, pair(string)) = fact_def.
 

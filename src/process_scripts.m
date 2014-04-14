@@ -61,12 +61,26 @@ parse_script_range(!Map) -->
 switch_line(Fun, Script - Result) =
     s(Fun ++ "(" ++ Script ++ ") = " ++ Result).
 
+:- func to_compact_list(set(range)) = list(range).
+
+to_compact_list(Ranges) = list.reverse(Compacted) :-
+    Sorted = to_sorted_list(Ranges),
+    Compacted = list.foldl((func(Range, Compacted0) = Compacted1 :-
+        (
+            Compacted0 = [range(PrevStart, PrevEnd) | CompactedR],
+            Range = range(Start, End),
+            PrevEnd = Start - 1
+        ->  Compacted1 = [range(PrevStart, End) | CompactedR]
+        ;   Compacted1 = [Range | Compacted0]
+        )
+    ), Sorted, []).
+
 process_scripts(Artifact, !IO) :-
     ucd_file_parser.file(Artifact^input, parse_script_range, Scripts, !IO),
     RangeType = "charset_range",
     RangePred = RangeType ++ "_pred",
     ScriptRangeFun = "script_range",
-    map.foldr3( (pred(Script::in, Ranges::in, Includes0::in, Includes1::out,
+    map.foldr3((pred(Script::in, Ranges::in, Includes0::in, Includes1::out,
         RangeSwitch0::in, RangeSwitch1::out, IO0::di, IO::uo) is det :-
             ScriptName = atom_to_string(Script),
             PredName = ScriptName ++ "_range",
@@ -76,8 +90,8 @@ process_scripts(Artifact, !IO) :-
                 import(SubArtifact^module_name) | Includes0],
             RangeSwitch1 = [pair(ScriptName, PredName) | RangeSwitch0],
             Facts = list.map((func(range(Start, End)) =
-                s(format("%s(%d, %d)", [s(PredName), i(Start), i(End)]))
-                ), to_sorted_list(Ranges)),
+                s(format("%s(0x%x, 0x%x)", [s(PredName), i(Start), i(End)]))
+            ), to_compact_list(Ranges)),
             code_gen.file(SubArtifact, [], [RangeDecl], Facts, IO0, IO)
         ), Scripts, [], SubIncludes, [], RangeSwitch, !IO),
     ScriptDecls = [
