@@ -23,6 +23,7 @@
 :- implementation.
 
 :- import_module char.
+:- import_module pair.
 :- import_module string.
 :- import_module list, set, map.
 :- import_module require.
@@ -134,9 +135,9 @@ process_ucd_types(Artifact, !IO) :-
             SubArtifact = Artifact `sub_module` Type,
             Ins = [include(SubArtifact^module_name) | Ins0]
         },
-        code_gen.file(SubArtifact, [], [Decl], AliasFacts^det_elem(Type))
+        code_gen.file(SubArtifact, []-[], [Decl], AliasFacts^det_elem(Type))
     ), AliasDecls, [], SubIncludes, !IO),
-    code_gen.file(Artifact, SubIncludes, EnumDecls, [], !IO).
+    code_gen.file(Artifact, SubIncludes-[], EnumDecls, [], !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%

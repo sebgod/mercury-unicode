@@ -89,10 +89,13 @@ process_scripts(Artifact, !IO) :-
             Includes1 = [include(SubArtifact^module_name),
                 import(SubArtifact^module_name) | Includes0],
             RangeSwitch1 = [pair(ScriptName, PredName) | RangeSwitch0],
-            Facts = list.map((func(range(Start, End)) =
-                s(format("%s(0x%x, 0x%x)", [s(PredName), i(Start), i(End)]))
-            ), to_compact_list(Ranges)),
-            code_gen.file(SubArtifact, [], [RangeDecl], Facts, IO0, IO)
+            FactItems = list.foldl((func(range(Start, End), S0) = S :-
+                Elem = format("0x%x-0x%x", [i(Start), i(End)]),
+                (   S0 = "" -> S = Elem ; S = Elem ++ ",\n" ++ S0 )
+            ), to_compact_list(Ranges), ""),
+            Fact =  format("%s([%s])", [s(PredName), s(FactItems)]),
+            code_gen.file(SubArtifact, []-[import("pair")],
+                [RangeDecl], [s(Fact)], IO0, IO)
         ), Scripts, [], SubIncludes, [], RangeSwitch, !IO),
     ScriptDecls = [
         decl("func " ++ ScriptRangeFun ++ "(sc) = " ++ RangeType,
@@ -101,7 +104,7 @@ process_scripts(Artifact, !IO) :-
     ],
     ScriptIncludes = [import("require") | SubIncludes],
     ScriptFacts = list.map(switch_line(ScriptRangeFun), RangeSwitch),
-    code_gen.file(Artifact, ScriptIncludes, ScriptDecls, ScriptFacts, !IO).
+    code_gen.file(Artifact, ScriptIncludes-[], ScriptDecls, ScriptFacts, !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%

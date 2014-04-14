@@ -13,6 +13,7 @@
 :- import_module char.
 :- import_module sparse_bitset.
 :- import_module list.
+:- import_module pair.
 
 :- type range ---> range(int, int).
 :- type charset == sparse_bitset(char).
@@ -20,8 +21,8 @@
 :- func charset_from_list(list(char)) = charset.
 :- func charset_from_range(range) = charset.
 
-:- type charset_range == pred(int, int).
-:- inst charset_range_pred == (pred(out, out) is multi).
+:- type charset_range == pred(list(pair(int))).
+:- inst charset_range_pred == (pred(out) is det).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%

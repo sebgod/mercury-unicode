@@ -93,7 +93,7 @@ process_unicode_data(Artifact, !IO) :-
     ],
     ScriptIncludes = [import("require") | SubIncludes],
     ScriptFacts = list.map(switch_line(ScriptRangeFun), RangeSwitch),
-    code_gen.file(Artifact, ScriptIncludes, ScriptDecls, ScriptFacts, !IO).
+    code_gen.file(Artifact, ScriptIncludes-[], ScriptDecls, ScriptFacts, !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
