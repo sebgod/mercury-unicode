@@ -56,14 +56,9 @@ parse_script_range(!Map) -->
         }
     ).
 
-:- func switch_line(string, pair(string)) = fact_def.
-
-switch_line(Fun, Script - Result) =
-    s(Fun ++ "(" ++ Script ++ ") = " ++ Result).
-
 :- func to_compact_list(set(range)) = list(range).
 
-to_compact_list(Ranges) = list.reverse(Compacted) :-
+to_compact_list(Ranges) = Compacted :-
     Sorted = to_sorted_list(Ranges),
     Compacted = list.foldl((func(Range, Compacted0) = Compacted1 :-
         (
@@ -77,34 +72,27 @@ to_compact_list(Ranges) = list.reverse(Compacted) :-
 
 process_scripts(Artifact, !IO) :-
     ucd_file_parser.file(Artifact^input, parse_script_range, Scripts, !IO),
-    RangeType = "charset_range",
-    RangePred = RangeType ++ "_pred",
-    ScriptRangeFun = "script_range",
-    map.foldr3((pred(Script::in, Ranges::in, Includes0::in, Includes1::out,
-        RangeSwitch0::in, RangeSwitch1::out, IO0::di, IO::uo) is det :-
+    RangeSwitch = map.foldr(
+        (func(Script, Ranges, RangeSwitch0) = [Fact | RangeSwitch0] :-
             ScriptName = atom_to_string(Script),
-            PredName = ScriptName ++ "_range",
-            RangeDecl = typed_pred(PredName, RangeType, RangePred),
-            SubArtifact = Artifact `sub_module` ScriptName,
-            Includes1 = [include(SubArtifact^module_name),
-                import(SubArtifact^module_name) | Includes0],
-            RangeSwitch1 = [pair(ScriptName, PredName) | RangeSwitch0],
-            FactItems = list.foldl((func(range(Start, End), S0) = S :-
-                Elem = format("0x%x-0x%x", [i(Start), i(End)]),
-                (   S0 = "" -> S = Elem ; S = Elem ++ ",\n" ++ S0 )
-            ), to_compact_list(Ranges), ""),
-            Fact =  format("%s([%s])", [s(PredName), s(FactItems)]),
-            code_gen.file(SubArtifact, []-[import("pair")],
-                [RangeDecl], [s(Fact)], IO0, IO)
-        ), Scripts, [], SubIncludes, [], RangeSwitch, !IO),
+            list.foldl2((pred(range(Start, End)::in,
+                S0::in, S::out, I0::in, I::out) is det :-
+                    I = I0 + 1,
+                    Elem = format("0x%x-0x%x", [i(Start), i(End)]),
+                    (   S0 = ""      -> S = Elem
+                    ;   I mod 4 = 0 -> S = Elem ++ ",\n    " ++ S0
+                    ;   S = Elem ++ ", " ++ S0
+                    )
+                ), to_compact_list(Ranges), "", FactItems, 2, _),
+            Fact = s(format("script_range(%s)=[%s]",
+                [s(ScriptName), s(FactItems)]))
+        ), Scripts, []),
     ScriptDecls = [
-        decl("func " ++ ScriptRangeFun ++ "(sc) = " ++ RangeType,
-            [fun_mode(ScriptRangeFun, (semidet),
-                ["in"], "out(" ++ RangePred ++ ")")])
+        decl("type script_range == list(pair(int))", []),
+        decl("func script_range(sc) = script_range",
+            [fun_mode("script_range", (semidet), ["in"], "out")])
     ],
-    ScriptIncludes = [import("require") | SubIncludes],
-    ScriptFacts = list.map(switch_line(ScriptRangeFun), RangeSwitch),
-    code_gen.file(Artifact, ScriptIncludes-[], ScriptDecls, ScriptFacts, !IO).
+    code_gen.file(Artifact, []-[], ScriptDecls, RangeSwitch, !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%

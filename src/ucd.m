@@ -42,12 +42,11 @@
 
 script_charset(Script) = Charset :-
     ( if ScriptRange = script_range(Script) then
-        ScriptRange(RangePairs),
         Charset = list.foldl((func(Start-End, Charset0) =
                 union(Charset0, RangeSet) :-
             CharList = map(char.det_from_int, Start `..` End),
             RangeSet = sorted_list_to_set(CharList)
-        ), RangePairs, init)
+        ), ScriptRange, init)
       else
         sc_alias(Script, ScriptName),
         unexpected($file, $pred, "No chars for script " ++
