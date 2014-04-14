@@ -47,7 +47,7 @@ parse_script_range(!Map) -->
     ;   ws    -> { true }
     ;   char_range(Start, End),
         separator,
-        value_name(ScriptName),
+        value_name_no_ws(ScriptName),
         ws, ['#'],
         junk,
         {

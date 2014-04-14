@@ -46,7 +46,7 @@ main(!IO) :-
 aliases(!Aliases) -->
     ws_opt,
     (   [';']   ->  ws,
-        value_name(Alias),
+        value_name_no_ws(Alias),
         { !:Aliases = [Alias | !.Aliases] },
         aliases(!Aliases)
     ;   ['#'] -> junk
@@ -65,7 +65,7 @@ parse_type_with_aliases(!Map) -->
     ;   ws      -> { true }
     ;   identifier(Kind),
         separator,
-        value_name(ValueName),
+        value_name_no_ws(ValueName),
         {
             Aliases0 = [ValueName]
         },

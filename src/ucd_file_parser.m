@@ -15,8 +15,11 @@
 :- import_module map.
 :- import_module line_parser.
 
-:- pred value_name(string) `with_type` parser.
-:- mode value_name(out)    `with_inst` parser_pred.
+:- pred value_name_no_ws(string) `with_type` parser.
+:- mode value_name_no_ws(out)    `with_inst` parser_pred.
+
+:- pred until_separator(string) `with_type` parser.
+:- mode until_separator(out)    `with_inst` parser_pred.
 
 :- pred not_eol_or_comment(string) `with_type` parser.
 :- mode not_eol_or_comment(out)    `with_inst` parser_pred.
@@ -39,7 +42,9 @@
 
 %------------------------------------------------------------------------------%
 
-value_name(ValueName) --> until([';', ' ', '\t', '\r', '\n'], ValueName).
+value_name_no_ws(ValueName) --> until([';', ' ', '\t', '\r', '\n'], ValueName).
+
+until_separator(ValueName)  --> until([';'], ValueName).
 
 not_eol_or_comment(ValueName) --> until(['\r', '\n', '#'], ValueName).
 

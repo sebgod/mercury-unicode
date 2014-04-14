@@ -32,13 +32,16 @@
 :- import_module int.
 :- import_module line_parser.
 :- import_module ucd_file_parser.
-:- import_module ucd_types.
+:- import_module ucd_types, ucd_types.gc.
 :- import_module map_of_set.
 
 %------------------------------------------------------------------------------%
 
 :- type props --->
-    props(string).
+    props(
+        char_name::string,
+        category::gc
+         ).
 
 :- pred parse_char_properties `with_type` parser(int, props).
 :- mode parse_char_properties `with_inst` parser2_pred.
@@ -48,11 +51,14 @@ parse_char_properties(!Map) -->
     ;   ws    -> { true }
     ;   hex_number(Char),
         separator,
-        value_name(Name),
+        until_separator(Name),
+        separator,
+        value_name_no_ws(GCName),
         %ws, ['#'],
         junk,
         {
-            !:Map = !.Map^elem(Char) := props(Name)
+            gc_alias(GC, GCName),
+            !:Map = !.Map^elem(Char) := props(Name, GC)
         }
     ).
 
@@ -68,7 +74,6 @@ process_unicode_data(Artifact, !IO) :-
     ScriptRangeFun = "script_range",
     map.foldl3( (pred(Char::in, Props::in, Includes0::in, Includes1::out,
         RangeSwitch0::in, RangeSwitch1::out, IO0::di, IO::uo) is det :-
-            Props = props(Name),
             Includes1 = Includes0,
             RangeSwitch1 = RangeSwitch0,
             IO = IO0
