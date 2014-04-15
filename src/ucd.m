@@ -49,14 +49,14 @@ script_charset(Script) = Charset :-
         ), ScriptRange, init)
       else
         sc_alias(Script, ScriptName),
-        unexpected($file, $pred, "No chars for script " ++
-            ScriptName ++ " specified!")
+        unexpected($file, $pred,
+            format("No chars for script `%s' specified", [s(ScriptName)]))
     ).
 
 char_block(Char) = Block :-
     (
-        unexpected($file, $pred, format("%c is not in any Unicode block!",
-            [c(Char)]))
+        unexpected($file, $pred,
+            format("%c is not in any Unicode block!", [c(Char)]))
     ).
 
 %------------------------------------------------------------------------------%
