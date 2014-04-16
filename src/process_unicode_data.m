@@ -59,41 +59,28 @@ parse_char_properties(!Map) -->
         !:Map = !.Map^elem(Char) := props(Name, GC)
     }.
 
-:- func switch_line(string, pair(string)) = fact_def.
+:- type facts == list(fact_def).
 
-switch_line(Fun, Script - Result) =
-    s(Fun ++ "(" ++ Script ++ ") = " ++ Result).
+:- type prop_processor == pred(int, props, facts, facts).
+:- inst prop_processor_pred == (pred(in, in, in, out) is det).
+
+:- pred process_name `with_type` prop_processor `with_inst` prop_processor_pred.
+
+process_name(Char, Props, Facts0, [Fact | Facts0]) :-
+    Fact = s(format("%x - %s\n", [i(Char), s(Props^char_name)])).
 
 process_unicode_data(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact^input, parse_char_properties, Scripts, !IO),
-    RangeType = "charset_range",
-    RangePred = RangeType ++ "_pred",
-    ScriptRangeFun = "script_range",
-    map.foldl3( (pred(Char::in, Props::in, Includes0::in, Includes1::out,
-        RangeSwitch0::in, RangeSwitch1::out, IO0::di, IO::uo) is det :-
-            Includes1 = Includes0,
-            RangeSwitch1 = RangeSwitch0,
-            IO = IO0
-            %ScriptName = atom_to_string(Script),
-            %PredName = ScriptName ++ "_range",
-            %RangeDecl = typed_pred(PredName, RangeType, RangePred),
-            %SubArtifact = Artifact `sub_module` ScriptName,
-            %Includes1 = [include(SubArtifact^module_name),
-            %    import(SubArtifact^module_name) | Includes0],
-            %RangeSwitch1 = [pair(ScriptName, PredName) | RangeSwitch0],
-            %Facts = list.map((func(range(Start, End)) =
-            %    s(format("%s(%d, %d)", [s(PredName), i(Start), i(End)]))
-            %    ), to_sorted_list(Ranges)),
-            %code_gen.file(SubArtifact, [], [RangeDecl], Facts, IO0, IO)
-        ), Scripts, [], SubIncludes, [], RangeSwitch, !IO),
-    ScriptDecls = [
-        decl("func " ++ ScriptRangeFun ++ "(sc) = " ++ RangeType,
-            [fun_mode(ScriptRangeFun, (semidet),
-                ["in"], "out(" ++ RangePred ++ ")")])
-    ],
-    ScriptIncludes = [import("require") | SubIncludes],
-    ScriptFacts = list.map(switch_line(ScriptRangeFun), RangeSwitch),
-    code_gen.file(Artifact, ScriptIncludes-[], ScriptDecls, ScriptFacts, !IO).
+    ucd_file_parser.file(Artifact^input, parse_char_properties, CharProps, !IO),
+    SubGen = (pred(ModuleName::in, Proc::in(prop_processor_pred),
+            Import::out, IO0::di, IO1::uo) is det :-
+        map.foldl(Proc, CharProps, [], Facts),
+        SubModule = Artifact `sub_module` ModuleName,
+        code_gen.file(SubModule, []-[], [], Facts, IO0, IO1),
+        Import = include(SubModule^module_name)
+    ),
+    SubGen("name", process_name, NameImport, !IO),
+    IfaceIncludes = [NameImport],
+    code_gen.file(Artifact, IfaceIncludes-[], [], [], !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
