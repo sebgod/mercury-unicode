@@ -67,20 +67,29 @@ parse_char_properties(!Map) -->
 :- pred process_name `with_type` prop_processor `with_inst` prop_processor_pred.
 
 process_name(Char, Props, Facts0, [Fact | Facts0]) :-
-    Fact = s(format("%x - %s\n", [i(Char), s(Props^char_name)])).
+    CharName = Props^char_name,
+    Fact = s(format("char_prop(0x%x) = \"%s\")", [i(Char), s(CharName)])).
+
+:- pred process_gc `with_type` prop_processor `with_inst` prop_processor_pred.
+
+process_gc(Char, Props, Facts0, [Fact | Facts0]) :-
+    GCName = quote_atom_name("", atom_to_string(Props^category)),
+    Fact = s(format("char_prop(0x%x) = %s", [i(Char), s(GCName)])).
 
 process_unicode_data(Artifact, !IO) :-
     ucd_file_parser.file(Artifact^input, parse_char_properties, CharProps, !IO),
     SubGen = (pred(ModuleName::in, Proc::in(prop_processor_pred),
-            Import::out, IO0::di, IO1::uo) is det :-
+                   IncImps::out, IO0::di, IO1::uo) is det :-
         map.foldl(Proc, CharProps, [], Facts),
         SubModule = Artifact `sub_module` ModuleName,
         code_gen.file(SubModule, []-[], [], Facts, IO0, IO1),
-        Import = include(SubModule^module_name)
+        FQN = SubModule^module_name,
+        IncImps = [include(FQN), import(FQN)]
     ),
-    SubGen("name", process_name, NameImport, !IO),
-    IfaceIncludes = [NameImport],
-    code_gen.file(Artifact, IfaceIncludes-[], [], [], !IO).
+    SubGen("name", process_name, NameIncImps, !IO),
+    SubGen("gc",   process_gc,   GCIncImps, !IO),
+    IfaceIncImps = NameIncImps ++ GCIncImps,
+    code_gen.file(Artifact, IfaceIncImps-[], [], [], !IO).
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
