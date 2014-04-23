@@ -1,8 +1,7 @@
 mercury-unicode
 ===============
 
-Introduction
-------------
+## Introduction
 
 [Unicode character database](http://www.unicode.org) parser and library for the [Mercury language](https://github.com/Mercury-Language/mercury.git).
 The implementation uses the latest Unicode release, version 6.3.
@@ -16,8 +15,7 @@ common ground for portable libraries which must ensure a consistent behaviour
 across different execution environments. This means that no native code is
 involed, and all facts and data are purely derived from the UCD file.
 
-Components
-----------
+## Components
 
  1. [ucd_type_compiler.m](src/ucd_type_compiler.m)
    * Input: [PropertyValueAliases.txt](http://www.unicode.org/Public/UCD/latest/ucd/PropertyValueAliases.txt)
@@ -26,6 +24,7 @@ Components
    * The UCD compiler itself is modular, and links together a list of processors:
      - [process_scripts.m](src/process_scripts.m)
      - [process_blocks.m](src/process_blocks.m)
+     - [process_unicode_data.m](src/process_unicode_data.m)
  3. [Makefile](src/Makefile)
    * Variables:
      - MMC: the Mercury compiler executable
