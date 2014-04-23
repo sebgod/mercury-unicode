@@ -14,6 +14,7 @@
 
 :- include_module ucd.scripts.
 :- include_module ucd.normalisation.
+% XXX:Causes a kernel panic :- include_module ucd.unicode_data.
 
 % ucd.script_charset(Script) = Charset:
 %   Charset unifies with the codensed set of all valid chars from the given
