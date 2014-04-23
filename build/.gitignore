@@ -2,5 +2,6 @@
 *.m
 *.a
 *.so
+*.beams
 *.dll
 *.jar
