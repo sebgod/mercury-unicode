@@ -1,10 +1,11 @@
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+% vim: ft=mercury ff=unix ts=4 sw=4 et
+%----------------------------------------------------------------------------%
 % File: ucd.m
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Thu Mar 20 17:44:45 CET 2014
-% vim: ft=mercury ff=unix ts=4 sw=4 et
 %
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- module ucd.
 
@@ -14,32 +15,37 @@
 
 :- include_module ucd.scripts.
 :- include_module ucd.normalisation.
-% XXX:Causes a kernel panic :- include_module ucd.unicode_data.
+% :- include_module ucd.unicode_data. XXX:Causes a kernel panic
 
-% ucd.script_charset(Script) = Charset:
-%   Charset unifies with the codensed set of all valid chars from the given
-%   Unicode script.
-%
-%   Throws an exception iff the script contains no characters (not all scripts
-%   have Unicode characters assigned).
+%----------------------------------------------------------------------------%
+
+    % ucd.script_charset(Script) = Charset:
+    %   Charset unifies with the codensed set of all valid chars from the
+    %   given Unicode script.
+    %
+    %   Throws an exception iff the script contains no characters
+    %   (not all scripts have Unicode characters assigned).
 :- func script_charset(sc) = charset is det.
 
-% ucd.char_block(Char) = Block:
-%   Block unifies with the Unicode character block containing the Char.
+    % ucd.char_block(Char) = Block:
+    %   Block unifies with the Unicode character block containing the Char.
 :- func char_block(char) = blk is det.
 
-%------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- implementation.
 
 :- import_module ucd.scripts.
 :- import_module string.
-:- import_module sparse_bitset, list.
+:- import_module sparse_bitset,
+:- import_module list.
 :- import_module ucd_types.sc.
 :- import_module require.
 :- import_module solutions.
 :- import_module pair.
+
+%----------------------------------------------------------------------------%
 
 script_charset(Script) = Charset :-
     ( if ScriptRange = script_range(Script) then
@@ -60,8 +66,7 @@ char_block(Char) = Block :-
             format("%c is not in any Unicode block!", [c(Char)]))
     ).
 
-%------------------------------------------------------------------------------%
 
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 % -*- Mode: Mercury; column: 80; indent-tabs-mode: nil; tabs-width: 4 -*-
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%

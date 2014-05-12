@@ -1,11 +1,11 @@
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 % vim: ft=mercury ff=unix ts=4 sw=4 et
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 % File: process_unicode_data.m
 % Main author:  Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Mon Mar 10 13:54:02 CET 2014
 %
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- module process_unicode_data.
 
@@ -13,16 +13,21 @@
 
 :- import_module ucd_processor.
 
+%----------------------------------------------------------------------------%
+
 :- pred process_unicode_data `with_type` ucd_processor.
 :- mode process_unicode_data `with_inst` ucd_processor_pred.
 
-%------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- implementation.
 
 :- import_module io.
-:- import_module pair, list, set, map.
+:- import_module pair,
+:- import_module list,
+:- import_module set,
+:- import_module map.
 :- import_module char.
 :- import_module charset.
 :- import_module require.
@@ -32,10 +37,11 @@
 :- import_module int.
 :- import_module line_parser.
 :- import_module ucd_file_parser.
-:- import_module ucd_types, ucd_types.gc.
+:- import_module ucd_types,
+:- import_module ucd_types.gc.
 :- import_module map_of_set.
 
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- type props --->
     props(
@@ -74,7 +80,8 @@ to_string_const(Input, Max) = "\"" ++ Left ++ Right ++ "\"" :-
         Right = ""
     ).
 
-:- pred process_name `with_type` prop_processor `with_inst` prop_processor_pred.
+:- pred process_name `with_type` prop_processor
+                     `with_inst` prop_processor_pred.
 
 process_name(Char, Props, Facts0, [Fact | Facts0]) :-
     CharName = Props^char_name,
@@ -104,5 +111,5 @@ process_unicode_data(Artifact, !IO) :-
     IfaceIncImps = NameIncImps ++ GCIncImps,
     code_gen.file(Artifact, IfaceIncImps-[], [], [], !IO).
 
-%------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%

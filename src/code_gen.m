@@ -1,11 +1,11 @@
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 % vim: ft=mercury ff=unix ts=4 sw=4 et
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 % File: code_gen.m
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Sat Mar  8 11:46:34 CET 2014
 %
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- module code_gen.
 
@@ -35,12 +35,13 @@
 :- func pred_mode(string, determ, list(string)) = string.
 :- func fun_mode(string, determ, list(string), string) = string.
 
-% typed_pred(Name, WithType, WithInst) = Decl:
-%
-% Decl = pred Name `with_type` WithType `with_inst` WithInst.
+    % typed_pred(Name, WithType, WithInst) = Decl:
+    %
+    % Decl = pred Name `with_type` WithType `with_inst` WithInst.
 :- func typed_pred(string, string, string) = decl.
 
-:- pred file(artifact, pair(list(import)), list(decl), list(fact_def), io, io).
+:- pred file(artifact, pair(list(import)), list(decl), list(fact_def),
+    io, io).
 :- mode file(in, in, in, in, di, uo) is det.
 
 :- type print(T) == pred(T, io, io).
@@ -50,13 +51,13 @@
 
 :- func atom_to_string(T) = string.
 
-% quote_atom_name(Prefix, AtomName) = Quoted:
-%
-% e.g.: Quoted = (+)
+    % quote_atom_name(Prefix, AtomName) = Quoted:
+    %
+    % e.g.: Quoted = (+)
 :- func quote_atom_name(string, string) = string.
 
-%------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
 
 :- implementation.
 
@@ -102,8 +103,8 @@ typed_pred(PredName, PredType, PredInst) =
         [s(PredName), s(PredType), s(PredInst)]), []).
 
 separator(!IO) :-
-    io.print("%----------------------------------------", !IO),
-    io.print("--------------------------------------%\n", !IO).
+    io.print("%---------------------------------------", !IO),
+    io.print("-------------------------------------%\n", !IO).
 
 :- pred comment_line `with_type` print(string) `with_inst` print_pred.
 
@@ -198,5 +199,5 @@ quote_atom_name(Prefix, AtomName) = Quoted :-
     ;   Quoted = quoted_atom(AtomName)
     ).
 
-%------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
+%----------------------------------------------------------------------------%
