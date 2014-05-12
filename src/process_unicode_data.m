@@ -24,9 +24,9 @@
 :- implementation.
 
 :- import_module io.
-:- import_module pair,
-:- import_module list,
-:- import_module set,
+:- import_module pair.
+:- import_module list.
+:- import_module set.
 :- import_module map.
 :- import_module char.
 :- import_module charset.
@@ -37,7 +37,7 @@
 :- import_module int.
 :- import_module line_parser.
 :- import_module ucd_file_parser.
-:- import_module ucd_types,
+:- import_module ucd_types.
 :- import_module ucd_types.gc.
 :- import_module map_of_set.
 

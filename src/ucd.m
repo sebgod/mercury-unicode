@@ -38,7 +38,7 @@
 
 :- import_module ucd.scripts.
 :- import_module string.
-:- import_module sparse_bitset,
+:- import_module sparse_bitset.
 :- import_module list.
 :- import_module ucd_types.sc.
 :- import_module require.
