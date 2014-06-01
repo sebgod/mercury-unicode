@@ -11,3 +11,5 @@ tags
 *.a
 *.so
 *.dylib
+*.jar
+*.beams
