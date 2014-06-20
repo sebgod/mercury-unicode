@@ -1,20 +1,16 @@
-ifeq ($(OS),Windows_NT)
-    MMC=mercury_compile
-else
-    MMC=mmc
-endif
+MMC=mmc
 MCFLAGS=--use-grade-subdirs
 # --debug --stack-segments
 
-BUILD_MAKE:=cd build && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
-DOCS_MAKE:=cd docs && make MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
+BUILD_MAKE:=cd ../build && $(MAKE) MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
+DOCS_MAKE:=cd ../docs && $(MAKE) MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
 .PHONY: all clean update install sinstall libucd realclean copy docs
 
 libucd: copy
 	$(BUILD_MAKE) libucd
 
 copy:
-	cp -u src/*.m build
+	cp -u *.m ../build
 
 update:
 	$(BUILD_MAKE) update
@@ -23,9 +19,6 @@ all: copy update libucd docs
 
 install: libucd
 	$(BUILD_MAKE) install
-
-sinstall: libucd
-	$(BUILD_MAKE) sinstall
 
 clean:
 	$(BUILD_MAKE) clean

@@ -1,8 +1,4 @@
-ifeq ($(OS),Windows_NT)
-    MMC=mercury_compile
-else
-    MMC=mmc
-endif
+MMC=mmc
 MCFLAGS=--use-grade-subdirs
 # --debug --stack-segments
 
@@ -38,10 +34,7 @@ update:
 all: update libucd
 
 install: libucd
-	$(MMC) $(MCFLAGS) -m libucd.install
-
-sinstall: libucd
-	sudo $(MMC) $(MCFLAGS) -m libucd.install
+	$(SUDO) $(MMC) $(MCFLAGS) -m libucd.install
 
 clean:
 	rm -f ucd_compiler
@@ -49,7 +42,7 @@ clean:
 	rm -f *.err
 	rm -f *.mh
 	rm -f *.init
-	rm -fR Mercury/
+	$(SUDO) rm -fR Mercury/
 	rm -f ucd.*.m
 	rm -f ucd_types.m
 	rm -f ucd_types.*.m

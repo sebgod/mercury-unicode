@@ -11,7 +11,10 @@
 
 :MAKE
 @pushd %~dp0
+
+@pushd src
 @make MMC=%MMC% copy
+@popd
 
 @pushd build
 make MMC=%MMC% %*
