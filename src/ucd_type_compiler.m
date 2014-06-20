@@ -23,17 +23,19 @@
 :- implementation.
 
 :- import_module char.
-:- import_module pair.
-:- import_module string.
-:- import_module list, set, map.
-:- import_module require.
-:- import_module ucd_processor.
-:- import_module line_parser.
-:- import_module ucd_file_parser.
 :- import_module code_gen.
+:- import_module list.
+:- import_module line_parser.
+:- import_module map.
 :- import_module map_of_map.
 :- import_module map_of_set.
+:- import_module pair.
+:- import_module require.
+:- import_module set.
+:- import_module string.
 :- import_module term_io.
+:- import_module ucd_file_parser.
+:- import_module ucd_processor.
 
 %----------------------------------------------------------------------------%
 
