@@ -1,5 +1,8 @@
 MMC=mmc
-MCFLAGS=--use-grade-subdirs
+MCFLAGS=--use-grade-subdirs -O5
+ifdef GRADE
+MCFLAGS+=-s $(GRADE) --no-detect-libgrades
+endif
 # --debug --stack-segments
 
 COMMON_DEPS := $(wildcard map_*.m) code_gen.m line_parser.m ucd_file_parser.m ucd_processor.m
@@ -7,9 +10,9 @@ UCD_COMPILER_DEPS := $(wildcard ucd_*.m) ucd_types.m
 UCD_PROCESSORS := $(wildcard process_*.m)
 UCD_TYPE_COMPILER_DEPS := $(COMMON_DEPS) ucd_type_compiler.m charset.m
 
-.PHONY: all clean update install sinstall libucd realclean
 .PRECIOUS: %.txt
 
+.PHONY: libucd
 libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
 	$(MMC) $(MCFLAGS) -m $@
 
@@ -28,14 +31,18 @@ ucd_types.m: property_value_aliases.txt ucd_type_compiler
 ucd.%.m: %.txt ucd_compiler
 	./ucd_compiler $< $@
 
+.PHONY: update
 update:
 	./download_ucd.sh $(wildcard *.txt)
 
+.PHONY: all
 all: update libucd
 
+.PHONY: install
 install: libucd
 	$(SUDO) $(MMC) $(MCFLAGS) -m libucd.install
 
+.PHONY: clean
 clean:
 	rm -f ucd_compiler
 	rm -f ucd_type_compiler
@@ -52,5 +59,6 @@ clean:
 	rm -f *.a
 	rm -f *.dylib
 
+.PHONY: realclean
 realclean: clean
 	rm -f *.txt
