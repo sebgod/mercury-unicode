@@ -1,3 +1,7 @@
 #!/bin/sh
-exec make $*
+if [ -r src/Makefile ] ; then
+    cd src && exec make $*
+else
+    exec make $*
+fi
 

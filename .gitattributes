@@ -1,0 +1,40 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+*.ico binary
+*.jpg binary
+*.png binary
+*.exe binary
+*.7z  binary
+*.ZIP binary
+*.zip binary
+*.vim text eol=lf
+*.sh  text eol=lf
+*.m   text eol=lf
+*.md  text eol=lf
+*.moo text eol=lf
+*.cmd text eol=lf
+Makefile text eol=lf
+LICENSE text eol=lf
+.git* text eol=lf
+*.exp text eol=lf
+
+# Custom for Visual Studio
+*.cs     diff=csharp
+*.sln    merge=union
+*.csproj merge=union
+*.vbproj merge=union
+*.fsproj merge=union
+*.dbproj merge=union
+
+# Standard to msysgit
+*.doc    diff=astextplain
+*.DOC    diff=astextplain
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+*.dot    diff=astextplain
+*.DOT    diff=astextplain
+*.pdf    binary
+*.PDF    binary
+*.rtf    diff=astextplain
+*.RTF    diff=astextplain

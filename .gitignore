@@ -1,6 +1,4 @@
 Mercury/
-ucd_compiler
-ucd_type_compiler
 .*.swp
 tags
 *.mh
@@ -11,5 +9,7 @@ tags
 *.a
 *.so
 *.dylib
-*.jar
 *.beams
+*.jar
+*.out
+*.res
