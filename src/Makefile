@@ -1,9 +1,9 @@
 MMC=mmc
-MCFLAGS=--use-grade-subdirs -O5
+export MCFLAGS=--use-grade-subdirs -O5
 # --debug --stack-segments
 
-BUILD_MAKE:=cd ../build && $(MAKE) MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
-DOCS_MAKE:=cd ../docs && $(MAKE) MMC="$(MMC)" MCFLAGS="$(MCFLAGS)"
+BUILD_MAKE:=cd ../build && $(MAKE)
+DOCS_MAKE:=cd ../docs && $(MAKE)
 
 .PHONY: libucd
 libucd: copy
