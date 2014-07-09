@@ -13,3 +13,4 @@ tags
 *.jar
 *.out
 *.res
+*.log
