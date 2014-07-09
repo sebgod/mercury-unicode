@@ -16,7 +16,11 @@
    call :FIND_IN_PATH mercury.bat MMC MERCURY_HOME
 )
 
-@if exist "%~dp0src\Makefile" @set SRC_SUBDIR=%~dp0src
+@if exist "%~dp0src\Makefile" (
+    @set SRC_SUBDIR=%~dp0src
+) else (
+    if exist "%cd%\src\Makefile" set SRC_SUBDIR=%cd%\src
+)
 
 @if defined MMC goto :MAKE
 @echo Cannot find Mercury compiler executable, MERCURY_HOME=%MERCURY_HOME%
