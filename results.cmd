@@ -5,7 +5,7 @@
 @if defined SRC_SUBDIR @pushd "%SRC_SUBDIR%"
 @for %%R in (*.res) do @(
     echo @@ %%R
-    call convert_utf8to16 <%%R
+    call "%~dp0tools\convert_utf8to16" <%%R
 )
 
 @if defined SRC_SUBDIR @popd
