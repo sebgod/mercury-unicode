@@ -1,7 +1,10 @@
 #!/bin/sh
-if [ -r src/Makefile ] ; then
+if [ -r Makefile ] ; then
+    exec make $*
+elif [ -r src/Makefile ] ; then
     cd src && exec make $*
 else
-    exec make $*
+    echo "Couldn't find a Makefile" 1>&2
+    exit 1
 fi
 

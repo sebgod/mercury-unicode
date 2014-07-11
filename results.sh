@@ -5,8 +5,10 @@ show_res() {
     cat "$1"
 }
 
-if [ -r src/Makefile ] ; then
-    for r in src/*.res ; do show_res $r ; done
+if [ -r tests/Makefile ] ; then
+    for r in tests/*.res ; do show_res $r ; done
+elif [ -r Makefile ] ; then
+    for r in *.res ; do show_res $r ; done
 else
-    for r in *.res ;     do show_res $r ; done
+    echo "cannot find any result files" >&1
 fi

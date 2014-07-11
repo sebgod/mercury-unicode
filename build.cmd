@@ -1,6 +1,6 @@
 @setlocal enabledelayedexpansion enableextensions
 
-:: For the C# compiler, we MUST NOT use the UTF-8 codepage
+@rem ember that for the C# compiler, we MUST NOT use the UTF-8 codepage
 @set newCP=850
 @for /F "usebackq tokens=2 delims=:" %%A in (`chcp`) do @(
     set oldCP=%%A
@@ -16,10 +16,12 @@
    call :FIND_IN_PATH mercury.bat MMC MERCURY_HOME
 )
 
-@if exist "%~dp0src\Makefile" (
-    @set SRC_SUBDIR=%~dp0src
-) else (
-    if exist "%cd%\src\Makefile" set SRC_SUBDIR=%cd%\src
+@if not exist "Makefile" (
+    if exist "%cd%\src\Makefile" (
+        set SRC_SUBDIR=%cd%\src
+    ) else (
+        if exist "%~dp0src\Makefile" set SRC_SUBDIR=%~dp0src
+    )
 )
 
 @if defined MMC goto :MAKE

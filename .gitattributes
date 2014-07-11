@@ -18,6 +18,7 @@ Makefile text eol=lf
 LICENSE text eol=lf
 .git* text eol=lf
 *.exp text eol=lf
+*.options text eol=lf
 
 # Custom for Visual Studio
 *.cs     diff=csharp

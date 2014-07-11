@@ -1,11 +1,11 @@
 @setlocal enabledelayedexpansion enableextensions
 
-@if exist "%~dp0src\Makefile" @set SRC_SUBDIR=%~dp0src
+@if exist "%~dp0tests\Makefile" @set TESTS_SUBDIR=%~dp0tests
 
-@if defined SRC_SUBDIR @pushd "%SRC_SUBDIR%"
+@if defined TESTS_SUBDIR @pushd "%TESTS_SUBDIR%"
 @for %%R in (*.res) do @(
     echo @@ %%R
     call "%~dp0tools\convert_utf8to16" <%%R
 )
 
-@if defined SRC_SUBDIR @popd
+@if defined TESTS_SUBDIR @popd
