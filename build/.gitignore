@@ -5,3 +5,5 @@
 *.beams
 *.dll
 *.jar
+ucd_compiler
+ucd_type_compiler
