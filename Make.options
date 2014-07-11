@@ -1,0 +1,19 @@
+MMC:=mmc
+MTAGS:=mtags
+DIFF:=diff
+MCFLAGS:= --use-grade-subdirs -O5
+
+ifdef GRADE
+    MCFLAGS += -s $(GRADE) --no-detect-libgrades
+endif
+
+DIFF_FLAGS:=-d
+ifeq ($(OS),Windows_NT)
+    DIFF_FLAGS += --strip-trailing-cr
+	# this is a work-around for using make on MinGW32 when building with grade=java,
+	# as it creates the bash shell script instead of the Windows batch file
+    MCFLAGS += --target-env-type windows
+    SUDO:=
+else
+    SUDO:=sudo
+endif

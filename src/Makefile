@@ -3,11 +3,11 @@ export MCFLAGS=--use-grade-subdirs -O5
 # --debug --stack-segments
 
 BUILD_MAKE:=cd ../build && $(MAKE)
-DOCS_MAKE:=cd ../docs && $(MAKE)
+DOCS_MAKE:=cd ../doc && $(MAKE)
 
-.PHONY: libucd
-libucd: copy
-	$(BUILD_MAKE) libucd
+.PHONY: default
+default: copy
+	$(BUILD_MAKE) $(PROJ_LIBNAME)
 
 .PHONY: copy
 copy:
@@ -18,10 +18,10 @@ update:
 	$(BUILD_MAKE) update
 
 .PHONY: all
-all: copy update libucd docs
+all: copy update libucd doc
 
 .PHONY: install
-install: libucd
+install: $(PROJ_LIBNAME)
 	$(BUILD_MAKE) install
 
 .PHONY: clean
@@ -34,7 +34,7 @@ realclean:
 	$(BUILD_MAKE) realclean
 	$(DOCS_MAKE) clean
 
-.PHONY: docs
-docs:
+.PHONY: doc
+doc:
 	$(DOCS_MAKE) all
 	
