@@ -10,7 +10,7 @@ default: copy
 
 .PHONY: copy
 copy:
-	cp -l *.m ../build
+	cp -u -f -l *.m ../build
 
 .PHONY: update
 update:
