@@ -5,7 +5,7 @@ show_res() {
     cat "$1"
 }
 
-./build runtests
+./build.sh runtests
 
 if [ -r tests/Makefile ] ; then
     for r in tests/*.res ; do show_res $r ; done
