@@ -5,6 +5,8 @@ show_res() {
     cat "$1"
 }
 
+./build runtests
+
 if [ -r tests/Makefile ] ; then
     for r in tests/*.res ; do show_res $r ; done
 elif [ -r Makefile ] ; then
