@@ -1,6 +1,5 @@
-MMC=mmc
-export MCFLAGS=--use-grade-subdirs -O5
-# --debug --stack-segments
+include ../Make.options
+include ../Project.options
 
 BUILD_MAKE:=cd ../build && $(MAKE)
 DOCS_MAKE:=cd ../doc && $(MAKE)
@@ -11,14 +10,14 @@ default: copy
 
 .PHONY: copy
 copy:
-	cp -u *.m ../build
+	cp -l *.m ../build
 
 .PHONY: update
 update:
 	$(BUILD_MAKE) update
 
 .PHONY: all
-all: copy update libucd doc
+all: copy update $(PROJ_LIBNAME) doc
 
 .PHONY: install
 install: $(PROJ_LIBNAME)
