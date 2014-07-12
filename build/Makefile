@@ -1,25 +1,25 @@
-MMC=mmc
-MCFLAGS=--use-grade-subdirs -O5
-ifdef GRADE
-MCFLAGS+=-s $(GRADE) --no-detect-libgrades
-endif
-# --debug --stack-segments
+include ../Make.options
+include ../Project.options
 
-COMMON_DEPS := $(wildcard map_*.m) code_gen.m line_parser.m ucd_file_parser.m ucd_processor.m
-UCD_COMPILER_DEPS := $(wildcard ucd_*.m) ucd_types.m
-UCD_PROCESSORS := $(wildcard process_*.m)
-UCD_TYPE_COMPILER_DEPS := $(COMMON_DEPS) ucd_type_compiler.m charset.m
+UCD_COMPILER_DEPS := $(wildcard ../src/ucd_*.m) ucd_types.m
+UCD_PROCESSORS := $(wildcard ../src/process_*.m)
+UCD_GEN_MODULES := ucd_types.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m
+MODULES := $(wildcard ../src/*.m)
 
 .PRECIOUS: %.txt
 
-.PHONY: libucd
-libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
+.PHONY: $(PROJ_LIBNAME)
+$(PROJ_LIBNAME): $(UCD_GEN_MODULES)
+	$(MMC) -f $(MODULES) $(wildcard *.m)
+	$(MMC) $(MCFLAGS) --make $@
+
+Mercury.modules: $(MODULES)
+	$(MMC) -f $^
+
+ucd_type_compiler: Mercury.modules
 	$(MMC) $(MCFLAGS) -m $@
 
-ucd_type_compiler: $(UCD_TYPE_COMPILER_DEPS)
-	$(MMC) $(MCFLAGS) -m $@
-
-ucd_compiler: $(UCD_COMPILER_DEPS) $(UCD_PROCESSORS)
+ucd_compiler: Mercury.modules $(UCD_COMPILER_DEPS) $(UCD_PROCESSORS)
 	$(MMC) $(MCFLAGS) -m $@
 
 %.txt:
@@ -36,11 +36,11 @@ update:
 	./download_ucd.sh $(wildcard *.txt)
 
 .PHONY: all
-all: update libucd
+all: update $(PROJ_LIBNAME)
 
 .PHONY: install
-install: libucd
-	$(SUDO) $(MMC) $(MCFLAGS) -m libucd.install
+install: $(PROJ_LIBNAME)
+	$(SUDO) $(MMC) $(MCFLAGS) -m $(PROJ_LIBNAME).install
 
 .PHONY: clean
 clean:

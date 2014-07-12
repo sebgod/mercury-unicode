@@ -14,7 +14,7 @@
 :- import_module char, ucd_types, charset.
 
 :- include_module ucd.scripts.
-:- include_module ucd.normalisation.
+% :- include_module ucd.normalisation.
 % :- include_module ucd.unicode_data. XXX:Causes a kernel panic
 
 %----------------------------------------------------------------------------%

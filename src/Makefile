@@ -1,27 +1,22 @@
-MMC=mmc
-export MCFLAGS=--use-grade-subdirs -O5
-# --debug --stack-segments
+include ../Make.options
+include ../Project.options
 
 BUILD_MAKE:=cd ../build && $(MAKE)
 DOCS_MAKE:=cd ../doc && $(MAKE)
 
 .PHONY: default
-default: copy
+default:
 	$(BUILD_MAKE) $(PROJ_LIBNAME)
-
-.PHONY: copy
-copy:
-	cp -u *.m ../build
 
 .PHONY: update
 update:
 	$(BUILD_MAKE) update
 
 .PHONY: all
-all: copy update libucd doc
+all: copy update default doc
 
 .PHONY: install
-install: $(PROJ_LIBNAME)
+install: default
 	$(BUILD_MAKE) install
 
 .PHONY: clean
@@ -36,5 +31,5 @@ realclean:
 
 .PHONY: doc
 doc:
-	$(DOCS_MAKE) all
+	$(DOCS_MAKE) doc
 	

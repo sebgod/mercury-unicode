@@ -1,5 +1,6 @@
 Mercury/
 .*.swp
+*.swo
 tags
 *.mh
 *.err

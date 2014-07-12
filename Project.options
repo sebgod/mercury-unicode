@@ -1,2 +1,2 @@
-PROJ_CNAME:=mercury_unicode
+PROJ_CNAME:=ucd
 PROJ_LIBNAME:=lib$(PROJ_CNAME)
