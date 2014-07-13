@@ -30,7 +30,7 @@
 
 :MAKE
     @if defined SRC_SUBDIR @pushd "%SRC_SUBDIR%"
-    make MMC=%MMC% MERCURY_HOME=%MERCURY_HOME% %*
+    @make MMC=%MMC:\=/% MERCURY_HOME=%MERCURY_HOME:\=/% %*
     @set MAKE_RESULT=%ERRORLEVEL%
     @rem going back to the current working directory
     @if defined SRC_SUBDIR @popd

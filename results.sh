@@ -5,7 +5,19 @@ show_res() {
     cat "$1"
 }
 
-./build.sh runtests
+case "$1" in
+    -v)
+        TARGET=runtests-verbose
+        ;;
+    --verbose)
+        TARGET=runtests-verbose
+        ;;
+    *)
+        TARGET=runtests
+        ;;
+esac
+
+./build.sh $TARGET
 
 if [ -r tests/Makefile ] ; then
     for r in tests/*.res ; do show_res $r ; done
