@@ -40,3 +40,6 @@ doc:
 .PHONY: tools
 tools:
 	cd tools && $(MAKE) default
+
+.PHONY: all
+all: tools default doc runtests-verbose
