@@ -21,6 +21,7 @@ runtests-verbose:
 clean:
 	cd src && $(MAKE) clean
 	cd tests && $(MAKE) clean
+	cd tools && $(MAKE) clean
 
 .PHONY: realclean
 realclean:
@@ -34,4 +35,8 @@ tags:
 
 .PHONY: doc
 doc:
-	cd doc && $(MAKE) doc
+	cd doc && $(MAKE) default
+
+.PHONY: tools
+tools:
+	cd tools && $(MAKE) default
