@@ -30,9 +30,9 @@
 
 :MAKE
     @if defined SRC_SUBDIR @pushd "%SRC_SUBDIR%"
-    @make MMC=%MMC:\=/% MERCURY_HOME=%MERCURY_HOME:\=/% %*
-    @set MAKE_RESULT=%ERRORLEVEL%
-    @rem going back to the current working directory
+        @make MMC=%MMC:\=/% MERCURY_HOME=%MERCURY_HOME:\=/% %*
+        @set MAKE_RESULT=%ERRORLEVEL%
+        @rem going back to the current working directory
     @if defined SRC_SUBDIR @popd
     @rem ember the previous codepage (very important for Windows XP)
     @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
