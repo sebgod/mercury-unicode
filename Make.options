@@ -1,7 +1,11 @@
 MMC:=mmc
 MTAGS:=mtags
 DIFF:=diff
+WGET:=wget
 MCFLAGS:= --use-grade-subdirs -O5
+ZIP:=7za
+ZIP_EXT:=7z
+ZIP_UFLAGS:=u -ssc -y
 
 ifdef GRADE
     MCFLAGS += -s $(GRADE) --no-detect-libgrades
