@@ -31,6 +31,21 @@
     )
 )
 
+:: Make detection
+@set make_is_gnu=0
+@if not defined MAKE @set MAKE=make
+@for /F "usebackq" %%C in (`%MAKE% -v ^| find /c "GNU" 2^>nul`) do @(
+    set make_is_gnu=%%C
+)
+
+@if %make_is_gnu% EQU 0 (
+    @echo The make %MAKE% is not GNU compatible 2>&1
+    @rem ember the previous codepage (very important for Windows XP)
+    @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
+    @exit /b 1
+)
+
+:: If we have found mmc, proceed to make
 @if defined MMC goto :MAKE
 @echo Cannot find Mercury compiler executable, MERCURY_HOME=%MERCURY_HOME%
 @rem ember the previous codepage (very important for Windows XP)
@@ -40,7 +55,7 @@
 :MAKE
     @if defined SRC_SUBDIR @pushd "%SRC_SUBDIR%"
         @set MERCURY_CONFIG_DIR="%MERCURY_HOME%\lib\mercury"
-        @call gmake MMC="%MMC:\=/%" MERCURY_HOME="%MERCURY_HOME:\=/%" %*
+        @call %MAKE% MMC="%MMC:\=/%" MERCURY_HOME="%MERCURY_HOME:\=/%" %*
         @set MAKE_RESULT=%ERRORLEVEL%
     @if defined SRC_SUBDIR @popd
     @rem ember the previous codepage (very important for Windows XP)
@@ -48,7 +63,7 @@
     @exit /b %MAKE_RESULT%
 
 :SET_HOME
-    @setlocal enabledelayedexpansion
+    @setlocal enabledelayedexpansion enableextensions
     @set BIN=%~2
     @endlocal && (set %1="%MERCURY_HOME%\bin\%BIN%") && exit /b 0
 
