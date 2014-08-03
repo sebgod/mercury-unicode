@@ -1,2 +1,3 @@
 PROJ_CNAME:=ucd
 PROJ_LIBNAME:=lib$(PROJ_CNAME)
+PROJ_KIND:=mercury
