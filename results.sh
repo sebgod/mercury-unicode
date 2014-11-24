@@ -17,7 +17,7 @@ case "$1" in
         ;;
 esac
 
-./build.sh $TARGET
+./build.sh -s $TARGET
 
 if [ -r tests/Makefile ] ; then
     for r in tests/*.res ; do show_res $r ; done

@@ -42,4 +42,4 @@ tools:
 	cd tools && "$(MAKE)" default
 
 .PHONY: all
-all: tools default doc runtests-verbose
+all: tools default doc runtests
