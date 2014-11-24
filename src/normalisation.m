@@ -1,5 +1,5 @@
 %----------------------------------------------------------------------------%
-% vim: ft=mercury ff=unix ts=4 sw=4 et
+% vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: normalisation.m
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>

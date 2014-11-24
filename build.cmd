@@ -39,7 +39,7 @@
 )
 
 @if %make_is_gnu% EQU 0 (
-    @echo The make %MAKE% is not GNU compatible 2>&1
+    @echo The make %MAKE% is not GNU compatible 1>&2
     @rem ember the previous codepage (very important for Windows XP)
     @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
     @exit /b 1

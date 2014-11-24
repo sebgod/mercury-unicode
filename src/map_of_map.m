@@ -1,6 +1,6 @@
 %----------------------------------------------------------------------------%
 % File: map_of_map.m
-% vim: ft=mercury ff=unix ts=4 sw=4 et
+% vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Sun Mar 16 23:52:23 CET 2014
