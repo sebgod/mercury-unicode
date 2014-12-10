@@ -1,6 +1,6 @@
 @setlocal enabledelayedexpansion enableextensions
 
-@rem ember that for the C# compiler, we MUST NOT use the UTF-8 codepage
+:: Remember that for the C# compiler, we MUST NOT use the UTF-8 codepage
 @set newCP=850
 @for /F "usebackq tokens=2 delims=:" %%A in (`chcp`) do @(
     set oldCP=%%A
@@ -40,15 +40,15 @@
 
 @if %make_is_gnu% EQU 0 (
     @echo The make %MAKE% is not GNU compatible 1>&2
-    @rem ember the previous codepage (very important for Windows XP)
+    :: Remember the previous codepage (very important for Windows XP)
     @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
     @exit /b 1
 )
 
 :: If we have found mmc, proceed to make
 @if defined MMC goto :MAKE
-@echo Cannot find Mercury compiler executable, MERCURY_HOME=%MERCURY_HOME%
-@rem ember the previous codepage (very important for Windows XP)
+@echo Cannot find Mercury compiler executable, MERCURY_HOME=%MERCURY_HOME% 1>&2
+:: Remember the previous codepage (very important for Windows XP)
 @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
 @exit /b 1
 
@@ -58,7 +58,7 @@
         @call %MAKE% MMC="%MMC:\=/%" MERCURY_HOME="%MERCURY_HOME:\=/%" %*
         @set MAKE_RESULT=%ERRORLEVEL%
     @if defined SRC_SUBDIR @popd
-    @rem ember the previous codepage (very important for Windows XP)
+    :: Remember the previous codepage (very important for Windows XP)
     @if %oldCP% NEQ %newCP% chcp %oldCP% 1>nul
     @exit /b %MAKE_RESULT%
 
