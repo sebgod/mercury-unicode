@@ -2,6 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: ucd.m
+% Copyright © 2014 Sebastian Godelet
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Thu Mar 20 17:44:45 CET 2014
 %
@@ -42,7 +43,6 @@
 :- import_module pair.
 :- import_module require.
 :- import_module solutions.
-:- import_module sparse_bitset.
 :- import_module string.
 :- import_module ucd.scripts.
 :- import_module ucd_types.sc.
@@ -51,11 +51,11 @@
 
 script_charset(Script) = Charset :-
     ( if ScriptRange = script_range(Script) then
-        Charset = list.foldl((func(Start-End, Charset0) =
-                union(Charset0, RangeSet) :-
-            CharList = map(char.det_from_int, Start `..` End),
-            RangeSet = sorted_list_to_set(CharList)
-        ), ScriptRange, init)
+        Charset = list.foldl(
+            (func(Range, Charset0) =
+                union(Charset0, charset_from_range(Range))),
+            ScriptRange,
+            charset.init)
     else
         sc_alias(Script, ScriptName),
         unexpected($file, $pred,
