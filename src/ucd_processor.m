@@ -11,9 +11,9 @@
 
 :- interface.
 
-:- import_module string.
 :- import_module io.
 :- import_module list.
+:- import_module string.
 
 %----------------------------------------------------------------------------%
 
@@ -41,6 +41,7 @@
 
 :- implementation.
 
+:- import_module int. % for '<'/2
 :- import_module require.
 
 %----------------------------------------------------------------------------%
@@ -50,11 +51,12 @@ Artifact ^ module_name = string.det_remove_suffix(Artifact ^ output, ".m").
 parse_artifact(Args) = Artifact :-
     ( if Args = [InputFile, OutputFile | _] then
         List = string.split_at_char('/', OutputFile),
-        (   \+ list.length(List, 1) ->
+        ( if list.length(List) > 1 then
             list.det_split_last(List, List1, OutputFile1),
             Dir = string.join_list("/", List1),
             Artifact = artifact(InputFile, OutputFile1, Dir)
-        ;   Artifact = artifact(InputFile, OutputFile, "")
+        else
+            Artifact = artifact(InputFile, OutputFile, "")
         )
     else
         unexpected($file, $pred,

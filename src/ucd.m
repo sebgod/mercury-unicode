@@ -11,7 +11,9 @@
 
 :- interface.
 
-:- import_module char, ucd_types, charset.
+:- import_module char.
+:- import_module charset.
+:- import_module ucd_types.
 
 :- include_module ucd.scripts.
 :- include_module ucd.normalisation.
@@ -54,7 +56,7 @@ script_charset(Script) = Charset :-
             CharList = map(char.det_from_int, Start `..` End),
             RangeSet = sorted_list_to_set(CharList)
         ), ScriptRange, init)
-      else
+    else
         sc_alias(Script, ScriptName),
         unexpected($file, $pred,
             format("No chars for script `%s' specified", [s(ScriptName)]))

@@ -49,7 +49,7 @@ ucd_parsers("ucd.unicode_data", process_unicode_data).
 compile_ucd_file(Artifact, !IO) :-
     ( if ucd_parsers(Artifact ^ module_name, Parser) then
         Parser(Artifact, !IO)
-      else
+    else
         unexpected($file, $pred,
             "Cannot find a parser for " ++ Artifact^module_name)
     ).
