@@ -17,10 +17,10 @@ update:
 	$(BUILD_MAKE) update
 
 .PHONY: all
-all: copy update $(PROJ_LIBNAME) doc
+all: copy update default doc
 
 .PHONY: install
-install: $(PROJ_LIBNAME)
+install: default
 	$(BUILD_MAKE) install
 
 .PHONY: clean
