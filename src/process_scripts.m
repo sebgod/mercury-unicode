@@ -23,23 +23,27 @@
 
 :- implementation.
 
-:- import_module io.
-:- import_module pair, list, set, map.
 :- import_module char.
 :- import_module charset.
-:- import_module require.
-:- import_module exception.
 :- import_module code_gen.
-:- import_module string.
-:- import_module int.
+:- import_module exception.
+:- import_module io.
 :- import_module line_parser.
-:- import_module ucd_file_parser.
-:- import_module ucd_types, ucd_types.sc.
+:- import_module list.
+:- import_module int.
+:- import_module map.
 :- import_module map_of_set.
+:- import_module pair.
+:- import_module require.
+:- import_module set.
+:- import_module string.
+:- import_module ucd_file_parser.
+:- import_module ucd_types.
+:- import_module ucd_types.sc.
 
 %----------------------------------------------------------------------------%
 
-:- type ps == set(range).
+:- type ps == set(codepoint_range).
 
 :- pred parse_script_range `with_type` parser(sc, ps).
 :- mode parse_script_range `with_inst` parser2_pred.
@@ -54,20 +58,20 @@ parse_script_range(!Map) -->
         junk,
         {
             sc_alias(Script, ScriptName),
-            add_or_update(Script, range(Start, End), !Map)
+            add_or_update(Script, Start-End, !Map)
         }
     ).
 
-:- func to_compact_list(set(range)) = list(range).
+:- func to_compact_list(set(codepoint_range)) = list(codepoint_range).
 
 to_compact_list(Ranges) = Compacted :-
     Sorted = to_sorted_list(Ranges),
     Compacted = list.foldl((func(Range, Compacted0) = Compacted1 :-
         (
-            Compacted0 = [range(PrevStart, PrevEnd) | CompactedR],
-            Range = range(Start, End),
+            Compacted0 = [PrevStart-PrevEnd | CompactedR],
+            Range = Start-End,
             PrevEnd = Start - 1
-        ->  Compacted1 = [range(PrevStart, End) | CompactedR]
+        ->  Compacted1 = [PrevStart-End | CompactedR]
         ;   Compacted1 = [Range | Compacted0]
         )
     ), Sorted, []).
@@ -77,9 +81,10 @@ process_scripts(Artifact, !IO) :-
     RangeSwitch = map.foldr(
         (func(Script, Ranges, RangeSwitch0) = [Fact | RangeSwitch0] :-
             ScriptName = atom_to_string(Script),
-            list.foldl2((pred(range(Start, End)::in,
-                S0::in, S::out, I0::in, I::out) is det :-
+            list.foldl2(
+                (pred(Range::in, S0::in, S::out, I0::in, I::out) is det :-
                     I = I0 + 1,
+                    Range = Start-End,
                     Elem = format("0x%x-0x%x", [i(Start), i(End)]),
                     (   S0 = ""      -> S = Elem
                     ;   I mod 4 = 0 -> S = Elem ++ ",\n    " ++ S0
