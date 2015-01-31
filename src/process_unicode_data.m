@@ -95,7 +95,8 @@ process_gc(Char, Props, Facts0, [Fact | Facts0]) :-
     Fact = s(format("char_prop(0x%x) = %s", [i(Char), s(GCName)])).
 
 process_unicode_data(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact^input, parse_char_properties, CharProps, !IO),
+    ucd_file_parser.file(Artifact ^ input, parse_char_properties, CharProps,
+        !IO),
     SubGen = (pred(ModuleName::in, Type::in, Proc::in(prop_processor_pred),
                    IncImps::out, IO0::di, IO1::uo) is det :-
         map.foldr(Proc, CharProps, [], Facts),
