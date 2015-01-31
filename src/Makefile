@@ -1,12 +1,11 @@
 include ../Make.options
-include ../Project.options
 
 BUILD_MAKE:=cd ../build && $(MAKE)
 DOCS_MAKE:=cd ../doc && $(MAKE)
 
 .PHONY: default
 default: copy
-	$(BUILD_MAKE) $(PROJ_LIBNAME)
+	$(BUILD_MAKE) libucd
 
 .PHONY: copy
 copy:

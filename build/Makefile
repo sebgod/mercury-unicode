@@ -1,5 +1,4 @@
 include ../Make.options
-include ../Project.options
 
 COMMON_DEPS := $(wildcard map_*.m) code_gen.m line_parser.m ucd_file_parser.m ucd_processor.m
 UCD_COMPILER_DEPS := $(wildcard ucd_*.m) ucd_types.m
@@ -8,8 +7,8 @@ UCD_TYPE_COMPILER_DEPS := $(COMMON_DEPS) ucd_type_compiler.m
 
 .PRECIOUS: %.txt
 
-.PHONY: $(PROJ_LIBNAME)
-$(PROJ_LIBNAME): ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
+.PHONY: libucd
+libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
 	$(MMC) $(MCFLAGS) -m $@
 
 ucd_type_compiler: $(UCD_TYPE_COMPILER_DEPS)
@@ -32,11 +31,11 @@ update:
 	./download_ucd.sh $(wildcard *.txt)
 
 .PHONY: all
-all: update $(PROJ_LIBNAME)
+all: update libucd
 
 .PHONY: install
-install: $(PROJ_LIBNAME)
-	$(SUDO) $(MMC) $(MCFLAGS) -m $(PROJ_LIBNAME).install
+install: libucd
+	$(MMC) $(MCFLAGS) -m libucd.install
 
 .PHONY: clean
 clean:
@@ -46,7 +45,7 @@ clean:
 	rm -f *.err
 	rm -f *.mh
 	rm -f *.init
-	$(SUDO) rm -fR Mercury/
+	rm -fR Mercury/
 	rm -f ucd.*.m
 	rm -f ucd_types.m
 	rm -f ucd_types.*.m

@@ -1,10 +1,9 @@
 include ../Make.options
-include ../Project.options
 
 MODULES:=$(wildcard *.m) $(wildcard ../src/*.m)
 
 .PHONY: runtests
-runtests: test_$(PROJ_CNAME)
+runtests: test_ucd
 
 .PHONY: runtests-verbose
 runtests-verbose: $(TESTS)
@@ -15,16 +14,16 @@ Mercury.modules: $(MODULES)
 tags: $(MODULES)
 	$(MTAGS) $^
 
-test_$(PROJ_CNAME): Mercury.modules
+test_ucd: Mercury.modules
 	$(MMC) $(MCFLAGS) --make $@ $(MLLIBS) $(MLCLASSPATH)
 
 .PHONY: clean
 clean:
-	$(MMC) --make test_$(PROJ_CNAME).clean
+	$(MMC) --make test_ucd.clean
 
 .PHONY: realclean
 realclean:
-	$(MMC) --make test_$(PROJ_CNAME).realclean
+	$(MMC) --make test_ucd.realclean
 	rm -rf Mercury
 	rm -f $(wildcard *.err) $(wildcard *.mh)
 	rm -f Mercury.modules

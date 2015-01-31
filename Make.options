@@ -17,9 +17,7 @@ ifeq ($(OS),Windows_NT)
 	# this is a work-around for using make on MinGW32 when building with grade=java,
 	# as it creates the bash shell script instead of the Windows batch file
     MCFLAGS += --target-env-type windows
-    SUDO:=
     SORT:=gsort
 else
-    SUDO:=sudo
     SORT:=sort
 endif
