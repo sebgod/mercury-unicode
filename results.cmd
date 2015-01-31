@@ -3,7 +3,7 @@
 @if /i "%~1" EQU "-v" set TARGET=runtests-verbose
 @if /i "%~1" EQU "--verbose" set TARGET=runtests-verbose
 
-@call build -s %TARGET%
+@call build %TARGET%
 @if exist "%~dp0tests\Makefile" @set TESTS_SUBDIR=%~dp0tests
 
 @if defined TESTS_SUBDIR @pushd "%TESTS_SUBDIR%"
