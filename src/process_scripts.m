@@ -15,7 +15,7 @@
 
 %----------------------------------------------------------------------------%
 
-:- pred process_scripts `with_type` ucd_processor.
+:- pred process_scripts : ucd_processor_pred.
 :- mode process_scripts `with_inst` ucd_processor_pred.
 
 %----------------------------------------------------------------------------%
@@ -45,7 +45,7 @@
 
 :- type ps == set(codepoint_range).
 
-:- pred parse_script_range `with_type` parser(sc, ps).
+:- pred parse_script_range : parser_pred(sc, ps).
 :- mode parse_script_range `with_inst` parser2_pred.
 
 parse_script_range(!Map) -->

@@ -18,74 +18,80 @@
 
 :- type chars == list(char).
 
-:- type parser       == pred(chars, chars).
-:- type parser(T)    == pred(list(T), list(T), chars, chars).
-:- type parser(K, V) == pred(map(K, V), map(K, V), chars, chars).
+:- type parser_pred == pred(chars, chars).
+
+:- type parser_pred(T) == pred(list(T), list(T), chars, chars).
+
+:- type parser_pred(K, V) == pred(map(K, V), map(K, V), chars, chars).
+
 :- inst det_parser_pred  == (pred(in, out) is det).
+
 :- inst det_parser2_pred == (pred(in, out, in, out) is det).
+
 :- inst parser_pred  == (pred(in, out) is semidet).
+
 :- inst parser2_pred == (pred(in, out, in, out) is semidet).
 
 :- type filter == pred(char).
 :- inst filter_pred == (pred(in) is semidet).
 
-:- pred lines(parser(K, T), map(K, T), map(K, T), io, io).
+:- pred lines(parser_pred(K, T), map(K, T), map(K, T), io, io).
 :- mode lines(in(parser2_pred), in, out, di, uo) is det.
 :- mode lines(in(det_parser2_pred), in, out, di, uo) is det.
 
-:- pred junk `with_type` parser `with_inst` parser_pred.
+:- pred junk : parser_pred `with_inst` parser_pred.
 
-:- pred any(string) `with_type` parser.
+:- pred any(string) : parser_pred.
 :- mode any(in)     `with_inst` parser_pred.
 :- mode any(out)    `with_inst` parser_pred.
 
-:- pred until(chars, string) `with_type` parser.
+:- pred until(chars, string) : parser_pred.
 :- mode until(in, out)       `with_inst` parser_pred.
 
-:- pred ws `with_type` parser `with_inst` parser_pred.
+:- pred ws : parser_pred `with_inst` parser_pred.
 
-:- pred ws_char `with_type` parser `with_inst` parser_pred.
+:- pred ws_char : parser_pred `with_inst` parser_pred.
 
-:- pred ws_opt `with_type` parser.
+:- pred ws_opt : parser_pred.
 :- mode ws_opt(in, out) is det.
 
-:- pred char(char) `with_type` parser.
+:- pred char(char) : parser_pred.
 :- mode char(in)   `with_inst` parser_pred.
 :- mode char(out)  `with_inst` parser_pred.
 
-:- pred digit(int) `with_type` parser.
+:- pred digit(int) : parser_pred.
 :- mode digit(in)  `with_inst` parser_pred.
 :- mode digit(out) `with_inst` parser_pred.
 
-:- pred hex_number(int) `with_type` parser.
+:- pred hex_number(int) : parser_pred.
 :- mode hex_number(in)  `with_inst` parser_pred.
 :- mode hex_number(out) `with_inst` parser_pred.
 
-:- pred hex_digit(int)  `with_type` parser.
+:- pred hex_digit(int)  : parser_pred.
 :- mode hex_digit(in)   `with_inst` parser_pred.
 :- mode hex_digit(out)  `with_inst` parser_pred.
 
-:- pred identifier(string) `with_type` parser.
+:- pred identifier(string) : parser_pred.
 :- mode identifier(in)     `with_inst` parser_pred.
 :- mode identifier(out)    `with_inst` parser_pred.
 
-:- pred word(string) `with_type` parser.
+:- pred word(string) : parser_pred.
 :- mode word(in)     `with_inst` parser_pred.
 :- mode word(out)    `with_inst` parser_pred.
 
-:- type filter(T) == pred(filter, T, chars, chars).
+:- type filter_pred(T) == pred(filter, T, chars, chars).
 :- inst filter_pred_in  == (pred(in(filter_pred), in, in, out) is semidet).
 :- inst filter_pred_out == (pred(in(filter_pred), out, in, out) is semidet).
 
-:- pred filter `with_type` filter(string).
+:- pred filter : filter_pred(string).
 :- mode filter `with_inst` filter_pred_in.
 :- mode filter `with_inst` filter_pred_out.
 
-:- pred filter_chars `with_type` filter(chars).
+:- pred filter_chars : filter_pred(chars).
 :- mode filter_chars `with_inst` filter_pred_in.
 :- mode filter_chars `with_inst` filter_pred_out.
 
-:- pred filter_char `with_type` filter(char).
+:- pred filter_char : filter_pred(char).
 :- mode filter_char `with_inst` filter_pred_in.
 :- mode filter_char `with_inst` filter_pred_out.
 
@@ -171,7 +177,7 @@ hex_digit(Digit) -->
     ;   digit(Digit)
     ).
 
-:- pred hex_number2(int, int) `with_type` parser.
+:- pred hex_number2(int, int) : parser_pred.
 :- mode hex_number2(in, out)  `with_inst` parser_pred.
 
 hex_number2(!Hex) -->

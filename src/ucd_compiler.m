@@ -37,7 +37,7 @@ main(!IO) :-
     Artifact = parse_artifact(Args),
     compile_ucd_file(Artifact, !IO).
 
-:- pred ucd_parsers(string, ucd_processor).
+:- pred ucd_parsers(string, ucd_processor_pred).
 :- mode ucd_parsers(in, out(ucd_processor_pred)) is semidet.
 
 ucd_parsers("ucd.blocks", process_blocks).

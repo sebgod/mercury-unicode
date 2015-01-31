@@ -24,10 +24,10 @@
         dir    :: string
     ).
 
-:- type ucd_processor == pred(artifact, io, io).
+:- type ucd_processor_pred == pred(artifact, io, io).
 :- inst ucd_processor_pred == (pred(in, di, uo) is det).
 
-:- type state_processor(K, S, T) == pred(K, S, T, T).
+:- type state_processor_pred(K, S, T) == pred(K, S, T, T).
 :- inst state_processor_pred  == (pred(in, in, in, out) is det).
 
 :- func artifact ^ module_name = string.

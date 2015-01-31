@@ -43,10 +43,18 @@ canonical_compose(String) = String.
 compatibility_decompose(String) = String.
 
 normalise(String, Form) = Norm :-
-    (   Form = nfd  -> Norm = canonical_decompose(String)
-    ;   Form = nfc  -> Norm = canonical_compose(canonical_decompose(String))
-    ;   Form = nfkd -> Norm = compatibility_decompose(String)
-    ;   Norm = canonical_compose(compatibility_decompose(String))
+    (
+        Form = nfd,
+        Norm = canonical_decompose(String)
+    ;
+        Form = nfc,
+        Norm = canonical_compose(canonical_decompose(String))
+    ;
+        Form = nfkd,
+        Norm = compatibility_decompose(String)
+    ;
+        Form = nfkc,
+        Norm = canonical_compose(compatibility_decompose(String))
     ).
 
 %----------------------------------------------------------------------------%

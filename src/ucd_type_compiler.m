@@ -44,7 +44,7 @@ main(!IO) :-
     Artifact = parse_artifact(Args),
     process_ucd_types(Artifact, !IO).
 
-:- pred aliases `with_type` parser(string) `with_inst` parser2_pred.
+:- pred aliases : parser_pred(string) `with_inst` parser2_pred.
 
 aliases(!Aliases) -->
     ws_opt,
@@ -60,7 +60,7 @@ aliases(!Aliases) -->
 :- type decls == list(decl).
 :- type alias_decls == map(string, decl).
 :- type fact_defs == map(string, list(fact_def)).
-:- pred parse_type_with_aliases `with_type` parser(string, ps).
+:- pred parse_type_with_aliases : parser_pred(string, ps).
 :- mode parse_type_with_aliases `with_inst` parser2_pred.
 
 parse_type_with_aliases(!Map) -->
@@ -79,7 +79,7 @@ parse_type_with_aliases(!Map) -->
         }
     ).
 
-:- pred type_decl `with_type` state_processor(string, ps, decls).
+:- pred type_decl : state_processor_pred(string, ps, decls).
 :- mode type_decl `with_inst` state_processor_pred.
 
 type_decl(TypeName, EnumValues, S0, [decl(Decl, []) | S0]) :-
@@ -93,7 +93,7 @@ type_decl(TypeName, EnumValues, S0, [decl(Decl, []) | S0]) :-
         ), EnumValues, ""
    ).
 
-:- pred type_alias_decl `with_type` state_processor(string, ps, alias_decls).
+:- pred type_alias_decl : state_processor_pred(string, ps, alias_decls).
 :- mode type_alias_decl `with_inst` state_processor_pred.
 
 type_alias_decl(TypeName, EnumValues, !Decls) :-
@@ -105,7 +105,7 @@ type_alias_decl(TypeName, EnumValues, !Decls) :-
     M3 = pred_mode(Name, (semidet), ["out", "in"]),
     !:Decls = !.Decls^elem(TypeName) := decl(P, [M1, M2, M3]).
 
-:- pred type_alias_fact `with_type` state_processor(string, ps, fact_defs).
+:- pred type_alias_fact : state_processor_pred(string, ps, fact_defs).
 :- mode type_alias_fact `with_inst` state_processor_pred.
 
 type_alias_fact(TypeName, EnumValues, !FactMap) :-
@@ -124,7 +124,7 @@ type_alias_fact(TypeName, EnumValues, !FactMap) :-
     ),
     !:FactMap = !.FactMap^elem(TypeName) := Facts.
 
-:- pred process_ucd_types `with_type` ucd_processor.
+:- pred process_ucd_types : ucd_processor_pred.
 :- mode process_ucd_types `with_inst` ucd_processor_pred.
 
 process_ucd_types(Artifact, !IO) :-
@@ -132,7 +132,8 @@ process_ucd_types(Artifact, !IO) :-
     map.foldr(type_decl,       Types, [], EnumDecls),
     map.foldr(type_alias_decl, Types, init, AliasDecls),
     map.foldr(type_alias_fact, Types, init, AliasFacts),
-    map.foldr2((pred(Type::in, Decl::in, Ins0::in, Ins::out, di, uo) is det -->
+    map.foldr2((pred(Type::in, Decl::in, Ins0::in, Ins::out, di, uo)
+        is det -->
         {
             SubArtifact = Artifact `sub_module` Type,
             Ins = [include(SubArtifact^module_name) | Ins0]

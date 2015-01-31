@@ -1,7 +1,7 @@
 %----------------------------------------------------------------------------%
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
-% File: ucd_file_parser.m
+% File: ucd_file_parser_predm
 % Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
 % Created on: Tue Mar 18 15:25:31 CET 2014
 %
@@ -17,21 +17,21 @@
 
 %----------------------------------------------------------------------------%
 
-:- pred value_name_no_ws(string) `with_type` parser.
+:- pred value_name_no_ws(string) : parser_pred.
 :- mode value_name_no_ws(out)    `with_inst` parser_pred.
 
-:- pred until_separator(string) `with_type` parser.
+:- pred until_separator(string) : parser_pred.
 :- mode until_separator(out)    `with_inst` parser_pred.
 
-:- pred not_eol_or_comment(string) `with_type` parser.
+:- pred not_eol_or_comment(string) : parser_pred.
 :- mode not_eol_or_comment(out)    `with_inst` parser_pred.
 
-:- pred separator `with_type` parser `with_inst` parser_pred.
+:- pred separator : parser_pred `with_inst` parser_pred.
 
-:- pred char_range(int, int) `with_type` parser.
-:- mode char_range(out, out)   `with_inst` parser_pred.
+:- pred char_range(int, int) : parser_pred.
+:- mode char_range(out, out) `with_inst` parser_pred.
 
-:- pred file(string, parser(K, V), map(K, V), io, io).
+:- pred file(string, parser_pred(K, V), map(K, V), io, io).
 :- mode file(in, in(parser2_pred), out, di, uo) is det.
 
 %----------------------------------------------------------------------------%
@@ -65,7 +65,7 @@ file(InputFile, Parser, Parsed, !IO) :-
         Result = error(Error) ->
         unexpected($file, $pred, io.error_message(Error))
     ;
-        line_parser.lines(Parser, init, Parsed, !IO),
+        lines(Parser, init, Parsed, !IO),
         seen(!IO)
     ).
 

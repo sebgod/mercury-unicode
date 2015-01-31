@@ -15,7 +15,7 @@
 
 %----------------------------------------------------------------------------%
 
-:- pred process_unicode_data `with_type` ucd_processor.
+:- pred process_unicode_data : ucd_processor_pred.
 :- mode process_unicode_data `with_inst` ucd_processor_pred.
 
 %----------------------------------------------------------------------------%
@@ -43,13 +43,13 @@
 
 %----------------------------------------------------------------------------%
 
-:- type props --->
-    props(
-        char_name::string,
-        category::gc
-         ).
+:- type props
+    --->    props(
+                char_name::string,
+                category::gc
+            ).
 
-:- pred parse_char_properties `with_type` parser(int, props).
+:- pred parse_char_properties : parser_pred(int, props).
 :- mode parse_char_properties `with_inst` parser2_pred.
 
 parse_char_properties(!Map) -->
@@ -67,7 +67,7 @@ parse_char_properties(!Map) -->
 
 :- type facts == list(fact_def).
 
-:- type prop_processor == pred(int, props, facts, facts).
+:- type prop_processor_pred == pred(int, props, facts, facts).
 :- inst prop_processor_pred == (pred(in, in, in, out) is det).
 
 :- func to_string_const(string, int) = string.
@@ -80,15 +80,14 @@ to_string_const(Input, Max) = "\"" ++ Left ++ Right ++ "\"" :-
         Right = ""
     ).
 
-:- pred process_name `with_type` prop_processor
-                     `with_inst` prop_processor_pred.
+:- pred process_name : prop_processor_pred `with_inst` prop_processor_pred.
 
 process_name(Char, Props, Facts0, [Fact | Facts0]) :-
     CharName = Props^char_name,
     Fact = s(format("char_prop(0x%x) = %s",
         [i(Char), s(to_string_const(CharName, 55))])).
 
-:- pred process_gc `with_type` prop_processor `with_inst` prop_processor_pred.
+:- pred process_gc : prop_processor_pred `with_inst` prop_processor_pred.
 
 process_gc(Char, Props, Facts0, [Fact | Facts0]) :-
     GCName = quote_atom_name("", atom_to_string(Props^category)),

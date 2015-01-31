@@ -36,7 +36,7 @@ add_or_update(Key1, Key2, Value, !Map) :-
     ).
 
 is_injection(Map) :-
-    list.all_true((pred(Value::in) is semidet :- count(Value) = 1), Map^values).
+    all_true((pred(Value::in) is semidet :- count(Value) = 1), Map^values).
 
 %----------------------------------------------------------------------------%
 %----------------------------------------------------------------------------%

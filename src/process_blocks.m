@@ -15,7 +15,7 @@
 
 %----------------------------------------------------------------------------%
 
-:- pred process_blocks `with_type` ucd_processor.
+:- pred process_blocks : ucd_processor_pred.
 :- mode process_blocks `with_inst` ucd_processor_pred.
 
 %----------------------------------------------------------------------------%
@@ -53,7 +53,7 @@ normalize_block_name(Name) = Norm :-
         Name),
     Norm = string.join_list("_", list.map(string.capitalize_first, Parts)).
 
-:- pred parse_block_range `with_type` parser(blk, ps).
+:- pred parse_block_range : parser_pred(blk, ps).
 :- mode parse_block_range `with_inst` parser2_pred.
 
 parse_block_range(!Map) -->
@@ -73,7 +73,7 @@ parse_block_range(!Map) -->
 process_blocks(Artifact, !IO) :-
     ucd_file_parser.file(Artifact^input, parse_block_range, Blocks, !IO),
     BlockRange = "block_range",
-    map.foldr( (pred(Block::in, Range::in, RangeSwitch0::in, RangeSwitch1::out)
+    map.foldr((pred(Block::in, Range::in, RangeSwitch0::in, RangeSwitch1::out)
         is det :-
             BlockName = atom_to_string(Block),
             Range = range(Start, End),
