@@ -9,13 +9,13 @@ UCD_TYPE_COMPILER_DEPS := $(COMMON_DEPS) ucd_type_compiler.m
 
 .PHONY: libucd
 libucd: ucd_types.m ucd.m ucd.scripts.m ucd.blocks.m ucd.unicode_data.m normalisation.m
-	$(MMC) $(MCFLAGS) -m $@
+	$(MMC) $(MCFLAGS) -m $@ $(MLLIBS)
 
 ucd_type_compiler: $(UCD_TYPE_COMPILER_DEPS)
-	$(MMC) $(MCFLAGS) -m $@ --ml mercury_misc
+	$(MMC) $(MCFLAGS) -m $@ $(MLLIBS)
 
 ucd_compiler: $(UCD_COMPILER_DEPS) $(UCD_PROCESSORS)
-	$(MMC) $(MCFLAGS) -m $@
+	$(MMC) $(MCFLAGS) -m $@ $(MLLIBS)
 
 %.txt:
 	./download_ucd.sh $@
