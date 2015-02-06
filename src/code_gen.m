@@ -62,7 +62,8 @@
 :- implementation.
 
 :- import_module exception.
-:- import_module term.
+:- import_module term.              % for `const'/0
+:- import_module term_conversion.   % for `term_to_type'/2
 :- import_module term_io.
 :- import_module require.
 :- import_module char.
