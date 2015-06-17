@@ -1,6 +1,6 @@
 %------------------------------------------------------------------------------%
 % ucd_compiler.m
-% Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Sebastian Godelet <sebastian.godelet@outlook.com>
 % Fri Feb 28 23:30:58 CET 2014
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %

@@ -2,7 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: ucd_type_compiler.m
-% Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Fri Mar 11 21:22:11 CET 2014
 %
 %----------------------------------------------------------------------------%

@@ -2,7 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: map_of_set.m
-% Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Sun Mar 16 23:52:23 CET 2014
 %
 %----------------------------------------------------------------------------%

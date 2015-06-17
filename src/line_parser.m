@@ -2,7 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: line_parser.m
-% Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Mon Mar 10 15:18:45 CET 2014
 %
 %----------------------------------------------------------------------------%

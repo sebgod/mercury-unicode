@@ -3,7 +3,7 @@
 %----------------------------------------------------------------------------%
 % File: ucd.m
 % Copyright © 2014 Sebastian Godelet
-% Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Thu Mar 20 17:44:45 CET 2014
 %
 %----------------------------------------------------------------------------%

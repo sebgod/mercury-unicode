@@ -2,7 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: ucd_file_parser_predm
-% Main author: Sebastian Godelet <sebastian.godelet+github@gmail.com>
+% Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Tue Mar 18 15:25:31 CET 2014
 %
 %----------------------------------------------------------------------------%
