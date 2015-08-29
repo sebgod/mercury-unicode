@@ -32,9 +32,6 @@
 
 :- inst parser2_pred == (pred(in, out, in, out) is semidet).
 
-:- type filter == pred(char).
-:- inst filter_pred == (pred(in) is semidet).
-
 :- pred lines(parser_pred(K, T), map(K, T), map(K, T), io, io).
 :- mode lines(in(parser2_pred), in, out, di, uo) is det.
 :- mode lines(in(det_parser2_pred), in, out, di, uo) is det.
@@ -79,7 +76,9 @@
 :- mode word(in)     `with_inst` parser_pred.
 :- mode word(out)    `with_inst` parser_pred.
 
-:- type filter_pred(T) == pred(filter, T, chars, chars).
+:- type filter_pred == pred(char).
+:- inst filter_pred == (pred(in) is semidet).
+:- type filter_pred(T) == pred(filter_pred, T, chars, chars).
 :- inst filter_pred_in  == (pred(in(filter_pred), in, in, out) is semidet).
 :- inst filter_pred_out == (pred(in(filter_pred), out, in, out) is semidet).
 
