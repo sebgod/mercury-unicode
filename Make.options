@@ -1,3 +1,5 @@
+CP:=cp
+CP_FLAGS:=-f -p
 MMC:=mmc
 MTAGS:=mtags
 DIFF:=diff
@@ -12,13 +14,18 @@ ifdef GRADE
     MCFLAGS += -s $(GRADE) --no-detect-libgrades
 endif
 
+# these variables should not be edited by the user
+# NOTE: For Windows, a working msys environment is required
+SORT:=sort
 DIFF_FLAGS:=-d
+
 ifeq ($(OS),Windows_NT)
-    DIFF_FLAGS += --strip-trailing-cr
-	# this is a work-around for using make on MinGW32 when building with grade=java,
-	# as it creates the bash shell script instead of the Windows batch file
-    MCFLAGS += --target-env-type windows
-    SORT:=gsort
+    UNAME_S := Windows_NT
 else
-    SORT:=sort
+    UNAME_S := $(shell uname -s)
+endif
+
+ifeq ($(UNAME_S),Windows_NT)
+    DIFF_FLAGS += --strip-trailing-cr
+    SORT:=/bin/sort
 endif

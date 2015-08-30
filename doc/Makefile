@@ -1,4 +1,4 @@
-WGET:=wget
+include ../Make.options
 WGET_OPS:=-nv -N --page-requisites -e robots=off -np
 UNICODE_HOST:=www.unicode.org
 SCHEME:=http

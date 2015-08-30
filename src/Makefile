@@ -9,7 +9,7 @@ default: copy
 
 .PHONY: copy
 copy:
-	cp -u -f -l *.m ../build
+	$(CP) $(CP_FLAGS) *.m ../build
 
 .PHONY: update
 update:
