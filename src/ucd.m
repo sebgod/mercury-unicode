@@ -19,7 +19,11 @@
 :- include_module ucd.blocks.
 :- include_module ucd.scripts.
 :- include_module ucd.normalisation.
-% :- include_module ucd.unicode_data. XXX:Causes a kernel panic
+
+    % XXX: Causes a kernel panic on Linux, runtime abort on Windows
+    % I think we have no choice but to use a native array for property values,
+    % possibly with some kind of packing (depending on the data size)
+% :- include_module ucd.unicode_data.
 
 %----------------------------------------------------------------------------%
 
