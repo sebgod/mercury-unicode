@@ -102,7 +102,10 @@
 
 :- implementation.
 
-:- import_module require, int, string, std_util.
+:- import_module int.       % for digit parsing
+:- import_module require.
+:- import_module std_util.  % for isnt
+:- import_module string.    % for format et.al.
 
 %----------------------------------------------------------------------------%
 
@@ -117,11 +120,13 @@ lines(LineParser, !Records, !IO) :-
         LineResult = ok(Line),
         (
             LineParser(!Records, Line, Rest) ->
-            (   Rest = [] -> true
-            ;   parse_error($file, $pred,
+            ( if  Rest = [] then
+                true
+            else
+                parse_error($file, $pred,
                     "still unparsed: " ++ from_char_list(Rest), Line, !IO)
             )
-        ;   parse_error($file, $pred, "`LineParser` lambda failed", Line, !IO)
+        ;   parse_error($file, $pred, "`LineParser' lambda failed", Line, !IO)
         ),
         lines(LineParser, !Records, !IO)
     ;
@@ -134,10 +139,13 @@ lines(LineParser, !Records, !IO) :-
 filter(Filter, string.from_char_list(Chars)) --> filter_chars(Filter, Chars).
 
 filter_chars(Filter, Word) -->
-    (   filter_char(Filter, C)
-    ->  {   Word = [C | Rest] },
+    ( if
+        filter_char(Filter, C)
+    then
+        { Word = [C | Rest] },
         filter_chars(Filter, Rest)
-    ;   {   Word = [] }
+    else
+        { Word = [] }
     ).
 
 filter_char(Filter, Char) --> [Char], { Filter(Char) }.
@@ -150,7 +158,7 @@ until(Sep, Match) --> filter(isnt(contains(Sep)), Match).
 
 ws_char --> filter_char(char.is_whitespace, _).
 
-ws_opt --> ( ws_char -> ws_opt ; { true } ).
+ws_opt --> ( if ws_char then ws_opt else { true } ).
 
 ws --> ws_char, ws_opt.
 
@@ -180,10 +188,11 @@ hex_digit(Digit) -->
 :- mode hex_number2(in, out)  `with_inst` parser_pred.
 
 hex_number2(!Hex) -->
-    (   hex_digit(Digit)
-    ->  { !:Hex = !.Hex << 4 + Digit },
+    ( if hex_digit(Digit) then
+        { !:Hex = !.Hex << 4 + Digit },
         hex_number2(!Hex)
-    ;   { true }
+    else
+        { true }
     ).
 
 hex_number(Hex) --> hex_digit(Digit), hex_number2(Digit, Hex).

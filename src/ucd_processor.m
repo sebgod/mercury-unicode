@@ -19,9 +19,9 @@
 
 :- type artifact
     ---> artifact(
-        input  :: string,
-        output :: string,
-        dir    :: string
+            a_input  :: string,
+            a_output :: string,
+            a_dir    :: string
     ).
 
 :- type ucd_processor_pred == pred(artifact, io, io).
@@ -30,7 +30,7 @@
 :- type state_processor_pred(K, S, T) == pred(K, S, T, T).
 :- inst state_processor_pred  == (pred(in, in, in, out) is det).
 
-:- func artifact ^ module_name = string.
+:- func artifact ^ a_module_name = string.
 
 :- func parse_artifact(list(string)) = artifact.
 
@@ -46,7 +46,8 @@
 
 %----------------------------------------------------------------------------%
 
-Artifact ^ module_name = string.det_remove_suffix(Artifact ^ output, ".m").
+Artifact ^ a_module_name =
+    string.det_remove_suffix(Artifact ^ a_output, ".m").
 
 parse_artifact(Args) = Artifact :-
     ( if Args = [InputFile, OutputFile | _] then
@@ -64,8 +65,8 @@ parse_artifact(Args) = Artifact :-
     ).
 
 sub_module(Artifact, SubModule) = SubArtifact :-
-    File = Artifact^module_name ++ "." ++ SubModule ++ ".m",
-    SubArtifact = artifact(Artifact^input, File, Artifact^dir).
+    File = Artifact ^ a_module_name ++ "." ++ SubModule ++ ".m",
+    SubArtifact = artifact(Artifact ^ a_input, File, Artifact ^ a_dir).
 
 %----------------------------------------------------------------------------%
 %----------------------------------------------------------------------------%

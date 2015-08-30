@@ -66,18 +66,21 @@ parse_script_range(!Map) -->
 
 to_compact_list(Ranges) = Compacted :-
     Sorted = to_sorted_list(Ranges),
-    Compacted = list.foldl((func(Range, Compacted0) = Compacted1 :-
-        (
+    Compacted = list.foldl((func(Range, Compacted0) =
+        ( if
             Compacted0 = [PrevStart-PrevEnd | CompactedR],
             Range = Start-End,
             PrevEnd = Start - 1
-        ->  Compacted1 = [PrevStart-End | CompactedR]
-        ;   Compacted1 = [Range | Compacted0]
+        then
+            [PrevStart-End | CompactedR]
+        else
+            [Range | Compacted0]
         )
     ), Sorted, []).
 
 process_scripts(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact^input, parse_script_range, Scripts, !IO),
+    ucd_file_parser.file(Artifact ^ a_input, parse_script_range, Scripts,
+        !IO),
     RangeSwitch = map.foldr(
         (func(Script, Ranges, RangeSwitch0) = [Fact | RangeSwitch0] :-
             ScriptName = atom_to_string(Script),
@@ -86,10 +89,14 @@ process_scripts(Artifact, !IO) :-
                     I = I0 + 1,
                     Range = Start-End,
                     Elem = format("0x%x-0x%x", [i(Start), i(End)]),
-                    (   S0 = ""      -> S = Elem
-                    ;   I mod 4 = 0 -> S = Elem ++ ",\n    " ++ S0
-                    ;   S = Elem ++ ", " ++ S0
-                    )
+                    S =
+                        ( if S0 = "" then
+                            Elem
+                        else if I mod 4 = 0 then
+                            Elem ++ ",\n    " ++ S0
+                        else
+                            Elem ++ ", " ++ S0
+                        )
                 ), to_compact_list(Ranges), "", FactItems, 2, _),
             Fact = s(format("script_range(%s)=[%s]",
                 [s(ScriptName), s(FactItems)]))

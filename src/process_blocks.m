@@ -71,7 +71,7 @@ parse_block_range(!Map) -->
     ).
 
 process_blocks(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact^input, parse_block_range, Blocks, !IO),
+    ucd_file_parser.file(Artifact ^ a_input, parse_block_range, Blocks, !IO),
     BlockRange = "block_range",
     map.foldr((pred(Block::in, Range::in, RangeSwitch0::in, RangeSwitch1::out)
         is det :-

@@ -128,18 +128,20 @@ type_alias_fact(TypeName, EnumValues, !FactMap) :-
 :- mode process_ucd_types `with_inst` ucd_processor_pred.
 
 process_ucd_types(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact^input, parse_type_with_aliases, Types, !IO),
+    ucd_file_parser.file(Artifact ^ a_input, parse_type_with_aliases,
+        Types, !IO),
     map.foldr(type_decl,       Types, [], EnumDecls),
     map.foldr(type_alias_decl, Types, init, AliasDecls),
     map.foldr(type_alias_fact, Types, init, AliasFacts),
-    map.foldr2((pred(Type::in, Decl::in, Ins0::in, Ins::out, di, uo)
-        is det -->
-        {
-            SubArtifact = Artifact `sub_module` Type,
-            Ins = [include(SubArtifact^module_name) | Ins0]
-        },
-        code_gen.file(SubArtifact, []-[], [Decl], AliasFacts^det_elem(Type))
-    ), AliasDecls, [], SubIncludes, !IO),
+    map.foldr2(
+        (pred(Type::in, Decl::in, Ins0::in, Ins::out, di, uo)
+            is det -->
+                { SubArtifact = Artifact `sub_module` Type,
+                  Ins = [include(SubArtifact ^ a_module_name) | Ins0]
+                },
+                code_gen.file(SubArtifact, []-[], [Decl],
+                    AliasFacts ^ det_elem(Type))
+        ), AliasDecls, [], SubIncludes, !IO),
     code_gen.file(Artifact, SubIncludes-[], EnumDecls, [], !IO).
 
 %----------------------------------------------------------------------------%

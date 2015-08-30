@@ -45,8 +45,8 @@
 
 :- type props
     --->    props(
-                char_name::string,
-                category::gc
+                prop_char_name  :: string,
+                prop_category   :: gc
             ).
 
 :- pred parse_char_properties : parser_pred(int, props).
@@ -73,28 +73,31 @@ parse_char_properties(!Map) -->
 :- func to_string_const(string, int) = string.
 
 to_string_const(Input, Max) = "\"" ++ Left ++ Right ++ "\"" :-
-    (   length(Input) >= Max
-    ->  split_by_codepoint(Input, Max - 5, Left, Right0),
+    ( if
+        length(Input) >= Max
+    then
+        split_by_codepoint(Input, Max - 5, Left, Right0),
         Right = "\" ++\n\t\"" ++ Right0
-    ;   Left = Input,
+    else
+        Left = Input,
         Right = ""
     ).
 
 :- pred process_name : prop_processor_pred `with_inst` prop_processor_pred.
 
 process_name(Char, Props, Facts0, [Fact | Facts0]) :-
-    CharName = Props^char_name,
+    CharName = Props ^ prop_char_name,
     Fact = s(format("char_prop(0x%x) = %s",
         [i(Char), s(to_string_const(CharName, 55))])).
 
 :- pred process_gc : prop_processor_pred `with_inst` prop_processor_pred.
 
 process_gc(Char, Props, Facts0, [Fact | Facts0]) :-
-    GCName = quote_atom_name("", atom_to_string(Props^category)),
+    GCName = quote_atom_name("", atom_to_string(Props ^ prop_category)),
     Fact = s(format("char_prop(0x%x) = %s", [i(Char), s(GCName)])).
 
 process_unicode_data(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact ^ input, parse_char_properties, CharProps,
+    ucd_file_parser.file(Artifact ^ a_input, parse_char_properties, CharProps,
         !IO),
     SubGen = (pred(ModuleName::in, Type::in, Proc::in(prop_processor_pred),
                    IncImps::out, IO0::di, IO1::uo) is det :-
@@ -103,7 +106,7 @@ process_unicode_data(Artifact, !IO) :-
         code_gen.file(SubModule, []-[],
             [decl("func char_prop(int) = " ++ Type ++ " is semidet" , [])],
             Facts, IO0, IO1),
-        FQN = SubModule^module_name,
+        FQN = SubModule ^ a_module_name,
         IncImps = [include(FQN)] % , import(FQN)]
     ),
     SubGen("name", "string", process_name, NameIncImps, !IO),

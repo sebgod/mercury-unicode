@@ -30,14 +30,16 @@
 %----------------------------------------------------------------------------%
 
 add_or_update(Key, Value, !Map) :-
-    (   Set0 = !.Map^elem(Key)
-    ->  !:Map = !.Map^elem(Key) := insert(Set0, Value)
-    ;   !:Map = !.Map ^ elem(Key) := make_singleton_set(Value)
-    ).
+    !:Map =
+        ( if Set0 = !.Map ^ elem(Key) then
+            !.Map ^ elem(Key) := insert(Set0, Value)
+        else
+            !.Map ^ elem(Key) := make_singleton_set(Value)
+        ).
 
 is_injection(Map) :-
-    list.all_true(pred(Set::in) is semidet :- set.is_singleton(Set, _),
-        Map^values).
+    list.all_true(pred(Set::in) is semidet :-
+        set.is_singleton(Set, _), Map^values).
 
 %----------------------------------------------------------------------------%
 %----------------------------------------------------------------------------%

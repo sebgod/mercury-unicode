@@ -47,11 +47,11 @@ ucd_parsers("ucd.unicode_data", process_unicode_data).
 :- pred compile_ucd_file(artifact::in, io::di, io::uo) is det.
 
 compile_ucd_file(Artifact, !IO) :-
-    ( if ucd_parsers(Artifact ^ module_name, Parser) then
+    ( if ucd_parsers(Artifact ^ a_module_name, Parser) then
         Parser(Artifact, !IO)
     else
         unexpected($file, $pred,
-            "Cannot find a parser for " ++ Artifact^module_name)
+            "Cannot find a parser for " ++ Artifact ^ a_module_name)
     ).
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%

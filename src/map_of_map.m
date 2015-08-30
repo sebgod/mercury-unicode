@@ -1,7 +1,7 @@
 %----------------------------------------------------------------------------%
-% File: map_of_map.m
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
+% File: map_of_map.m
 % Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Sun Mar 16 23:52:23 CET 2014
 %
@@ -31,8 +31,12 @@
 %----------------------------------------------------------------------------%
 
 add_or_update(Key1, Key2, Value, !Map) :-
-    (   !:Map = !.Map ^ elem(Key1) ^ elem(Key2) := Value -> true
-    ;   !:Map = !.Map ^ elem(Key1) := ( init ^ elem(Key2) := Value )
+    ( if
+        !:Map = !.Map ^ elem(Key1) ^ elem(Key2) := Value
+    then
+        true
+    else
+        !:Map = !.Map ^ elem(Key1) := ( init ^ elem(Key2) := Value )
     ).
 
 is_injection(Map) :-

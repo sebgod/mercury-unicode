@@ -30,14 +30,17 @@
 
 %----------------------------------------------------------------------------%
 
+    % TODO: canonical decompose
 :- func canonical_decompose(string) = string.
 
 canonical_decompose(String) = String.
 
+    % TODO: canonical compose
 :- func canonical_compose(string) = string.
 
 canonical_compose(String) = String.
 
+    % TODO: compatibility decompose
 :- func compatibility_decompose(string) = string.
 
 compatibility_decompose(String) = String.
