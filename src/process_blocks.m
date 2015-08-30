@@ -82,7 +82,9 @@ process_blocks(Artifact, !IO) :-
                 | RangeSwitch0]
         ), Blocks, [], RangeSwitch),
     RangeDecl = decl(format("pred %s(blk, int, int)", [s(BlockRange)]),
-        [pred_mode(BlockRange, (det), ["in", "out", "out"])]),
+        [pred_mode(BlockRange, (semidet), ["in",  "out", "out"]),
+         pred_mode(BlockRange, (multi),   ["out", "out", "out"])
+        ]),
     code_gen.file(Artifact, []-[], [RangeDecl], RangeSwitch, !IO).
 
 %----------------------------------------------------------------------------%

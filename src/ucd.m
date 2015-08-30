@@ -16,6 +16,7 @@
 :- import_module charset.
 :- import_module ucd_types.
 
+:- include_module ucd.blocks.
 :- include_module ucd.scripts.
 :- include_module ucd.normalisation.
 % :- include_module ucd.unicode_data. XXX:Causes a kernel panic
@@ -23,7 +24,7 @@
 %----------------------------------------------------------------------------%
 
     % ucd.script_charset(Script) = Charset:
-    %   Charset unifies with the codensed set of all valid chars from the
+    %   Charset unifies with the condensed set of all valid chars from the
     %   given Unicode script.
     %
     %   Throws an exception iff the script contains no characters
@@ -39,11 +40,14 @@
 
 :- implementation.
 
+:- import_module int.  % for block range comparison
 :- import_module list.
 :- import_module pair.
 :- import_module require.
 :- import_module solutions.
 :- import_module string.
+
+:- import_module ucd.blocks.
 :- import_module ucd.scripts.
 :- import_module ucd_types.sc.
 
@@ -62,11 +66,21 @@ script_charset(Script) = Charset :-
             format("No chars for script `%s' specified", [s(ScriptName)]))
     ).
 
-char_block(Char) = Block :-
-    (
-        unexpected($file, $pred,
-            format("%c is not in any Unicode block!", [c(Char)]))
-    ).
+    % TODO: This implementation is crossly-inefficient (but correct).
+    % There should be some kind of table for quick selection.
+    % Looking at the most significant bit
+    % of the char and use that index to refer to a bucket of matching ranges
+    % should be the most efficient. This table could be pre-generated.
+char_block(Char) = CharBlock :-
+    CharVal = to_int(Char),
+    solutions(
+        (pred(Block::out) is nondet :-
+            block_range(Block, Start, End),
+            CharVal >= Start,
+            CharVal =< End
+        ),
+        Blocks),
+    CharBlock = ( if Blocks = [SingleBlock] then SingleBlock else nb ).
 
 
 %----------------------------------------------------------------------------%
