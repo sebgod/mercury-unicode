@@ -32,6 +32,8 @@
 
 :- func artifact ^ a_module_name = string.
 
+:- func artifact ^ a_path = string.
+
 :- func parse_artifact(list(string)) = artifact.
 
 :- func sub_module(artifact, string) = artifact.
@@ -41,13 +43,21 @@
 
 :- implementation.
 
-:- import_module int. % for '<'/2
+:- import_module dir.       % for file path calculation
+:- import_module int.       % for '<'/2
 :- import_module require.
 
 %----------------------------------------------------------------------------%
 
 Artifact ^ a_module_name =
     string.det_remove_suffix(Artifact ^ a_output, ".m").
+
+Artifact ^ a_path =
+    ( if Artifact ^ a_dir = "" then
+        Artifact ^ a_output
+    else
+        Artifact ^ a_dir / Artifact ^ a_output
+    ).
 
 parse_artifact(Args) = Artifact :-
     ( if Args = [InputFile, OutputFile | _] then
