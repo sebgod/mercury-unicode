@@ -4,8 +4,8 @@ mercury-unicode
 ## Introduction
 
 [Unicode character database](http://www.unicode.org) parser and library for the [Mercury language](https://github.com/Mercury-Language/mercury.git).
-The implementation uses the latest Unicode release, version 6.3.
-As Unicode updates are rather requent, this code uses a genertive approach,
+The implementation uses the latest Unicode release, version 8.0.
+As Unicode updates are rather frequent, this code uses a generative approach,
 to facilitate the frequent addition of characters, blocks and scripts.
 
 The project can be build using any current Mercury compiler in any legal grade.
@@ -13,7 +13,7 @@ The project can be build using any current Mercury compiler in any legal grade.
 A consequence of this approach is that this library can also be used as a 
 common ground for portable libraries which must ensure a consistent behaviour
 across different execution environments. This means that no native code is
-involed, and all facts and data are purely derived from the UCD file.
+involved, and all facts and data are purely derived from the UCD file.
 
 ## Components
 
