@@ -12,10 +12,6 @@ install:
 runtests:
 	cd tests && "$(MAKE)" runtests
 
-.PHONY: runtests-verbose
-runtests-verbose:
-	cd tests && "$(MAKE)" runtests-verbose
-
 .PHONY: clean
 clean:
 	cd src && "$(MAKE)" clean
@@ -36,9 +32,5 @@ tags:
 doc:
 	cd doc && "$(MAKE)" default
 
-.PHONY: tools
-tools:
-	cd tools && "$(MAKE)" default
-
 .PHONY: all
-all: tools default doc runtests
+all: default doc runtests

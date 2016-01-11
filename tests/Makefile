@@ -5,9 +5,6 @@ MODULES:=$(wildcard *.m) $(wildcard ../src/*.m)
 .PHONY: runtests
 runtests: test_ucd
 
-.PHONY: runtests-verbose
-runtests-verbose: $(TESTS)
-
 Mercury.modules: $(MODULES)
 	$(MMC) -f $^
 
