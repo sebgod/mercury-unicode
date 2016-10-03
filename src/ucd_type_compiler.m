@@ -85,12 +85,12 @@ parse_type_with_aliases(!Map) -->
 
 type_decl(TypeName, EnumValues, S0, [decl(Decl, []) | S0]) :-
     Decl = foldl(
-        (func(Key, _, EnumType0) = Result ++ quote_atom_name(TypeName, Key) :-
-            (
-                EnumType0 = ""
-            ->  Result = "type " ++ TypeName  ++ "\n    --->   "
-            ;   Result = EnumType0 ++ "\n    ;      "
-            )
+        (func(Key, _, EnumType0) =
+            ( if EnumType0 = ""  then
+                "type " ++ TypeName ++ "\n    --->   "
+            else
+                EnumType0 ++ "\n    ;      "
+            ) ++ quote_atom_name(TypeName, Key)
         ), EnumValues, ""
    ).
 
@@ -101,7 +101,7 @@ type_alias_decl(TypeName, EnumValues, !Decls) :-
     Name = string.format("%s_alias", [s(TypeName)]),
     P = string.format("pred %s(%s, string)", [s(Name), s(TypeName)]),
     M1 = pred_mode(Name, (semidet), ["in", "in"]),
-    ( is_injection(EnumValues) ->  InOutDet = (det) ; InOutDet = (multi)),
+    InOutDet = ( if is_injection(EnumValues) then (det) else (multi) ),
     M2 = pred_mode(Name, InOutDet,   ["in", "out"]),
     M3 = pred_mode(Name, (semidet), ["out", "in"]),
     !:Decls = !.Decls^elem(TypeName) := decl(P, [M1, M2, M3]).
@@ -135,13 +135,12 @@ process_ucd_types(Artifact, !IO) :-
     map.foldr(type_alias_decl, Types, init, AliasDecls),
     map.foldr(type_alias_fact, Types, init, AliasFacts),
     map.foldr2(
-        (pred(Type::in, Decl::in, Ins0::in, Ins::out, di, uo)
-            is det -->
-                { SubArtifact = Artifact `sub_module` Type,
-                  Ins = [include(SubArtifact ^ a_module_name) | Ins0]
-                },
+        (pred(Type::in, Decl::in, !.Ins::in, !:Ins::out, !.IO::di, !:IO::uo)
+            is det :-
+                SubArtifact = Artifact `sub_module` Type,
+                    !:Ins = [include(SubArtifact ^ a_module_name) | !.Ins],
                 code_gen.file(SubArtifact, []-[], [Decl],
-                    AliasFacts ^ det_elem(Type))
+                    AliasFacts ^ det_elem(Type), !IO)
         ), AliasDecls, [], SubIncludes, !IO),
     code_gen.file(Artifact, SubIncludes-[], EnumDecls, [], !IO).
 

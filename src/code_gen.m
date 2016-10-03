@@ -2,6 +2,7 @@
 % vim: ft=mercury ff=unix ts=4 sw=4 tw=78 et
 %----------------------------------------------------------------------------%
 % File: code_gen.m
+% Copyright © 2016 Sebastian Godelet
 % Main author: Sebastian Godelet <sebastian.godelet@outlook.com>
 % Created on: Sat Mar  8 11:46:34 CET 2014
 %
