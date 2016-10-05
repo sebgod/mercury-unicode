@@ -43,9 +43,7 @@
 
 %----------------------------------------------------------------------------%
 
-:- type ps == set(codepoint_range).
-
-:- pred parse_script_range : parser_pred(sc, ps).
+:- pred parse_script_range : parser_pred(sc, set(codepoint_range)).
 :- mode parse_script_range `with_inst` parser2_pred.
 
 parse_script_range(!Map) -->

@@ -25,6 +25,7 @@
 
 :- import_module code_gen.
 :- import_module char.
+:- import_module charset.
 :- import_module exception.
 :- import_module int.
 :- import_module io.
@@ -42,9 +43,6 @@
 
 %----------------------------------------------------------------------------%
 
-:- type range ---> range(int, int).
-:- type ps == range.
-
 :- func normalize_block_name(string) = string.
 
 normalize_block_name(Name) = Norm :-
@@ -53,7 +51,7 @@ normalize_block_name(Name) = Norm :-
         Name),
     Norm = string.join_list("_", list.map(string.capitalize_first, Parts)).
 
-:- pred parse_block_range : parser_pred(blk, ps).
+:- pred parse_block_range : parser_pred(blk, codepoint_range).
 :- mode parse_block_range `with_inst` parser2_pred.
 
 parse_block_range(!Map) -->
@@ -66,7 +64,7 @@ parse_block_range(!Map) -->
         {
             NormalizedBlockName = normalize_block_name(BlockName),
             blk_alias(Block, NormalizedBlockName),
-            !:Map = !.Map^elem(Block) := range(Start, End)
+            !:Map = !.Map^elem(Block) := Start-End
         }
     ).
 
@@ -76,7 +74,7 @@ process_blocks(Artifact, !IO) :-
     map.foldr((pred(Block::in, Range::in, RangeSwitch0::in, RangeSwitch1::out)
         is det :-
             BlockName = atom_to_string(Block),
-            Range = range(Start, End),
+            Range = Start-End,
             RangeSwitch1 = [s(format("%s(%s, %d, %d)", [
                 s(BlockRange), s(BlockName), i(Start), i(End)]))
                 | RangeSwitch0]
