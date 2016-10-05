@@ -83,6 +83,28 @@ to_string_const(Input, Max) = "\"" ++ Left ++ Right ++ "\"" :-
         Right = ""
     ).
 
+process_unicode_data(Artifact, !IO) :-
+    ucd_file_parser.file(Artifact ^ a_input, parse_char_properties, CharProps,
+        !IO),
+    SubGen = (pred(ModuleName::in, Type::in, Proc::in(prop_processor_pred),
+                   IncImps::out, !.IO::di, !:IO::uo) is det :-
+        map.foldr(Proc, CharProps, [], Facts),
+        SubModule = Artifact `sub_module` ModuleName,
+        code_gen.file(
+            SubModule,
+            []-[],
+            [decl("func char_prop(int) = " ++ Type ++ " is semidet" , [])],
+            Facts,
+            !IO
+        ),
+        FQN = SubModule ^ a_module_name,
+        IncImps = [include(FQN)] % , import(FQN)]
+    ),
+    SubGen("name", "string", process_name, NameIncImps, !IO),
+    SubGen("gc",   "gc",     process_gc,   GCIncImps,   !IO),
+    IfaceIncImps = NameIncImps ++ GCIncImps,
+    code_gen.file(Artifact, IfaceIncImps-[], [], [], !IO).
+
 :- pred process_name : prop_processor_pred `with_inst` prop_processor_pred.
 
 process_name(Char, Props, Facts0, [Fact | Facts0]) :-
@@ -95,24 +117,6 @@ process_name(Char, Props, Facts0, [Fact | Facts0]) :-
 process_gc(Char, Props, Facts0, [Fact | Facts0]) :-
     GCName = quote_atom_name("", atom_to_string(Props ^ prop_category)),
     Fact = s(format("char_prop(0x%x) = %s", [i(Char), s(GCName)])).
-
-process_unicode_data(Artifact, !IO) :-
-    ucd_file_parser.file(Artifact ^ a_input, parse_char_properties, CharProps,
-        !IO),
-    SubGen = (pred(ModuleName::in, Type::in, Proc::in(prop_processor_pred),
-                   IncImps::out, IO0::di, IO1::uo) is det :-
-        map.foldr(Proc, CharProps, [], Facts),
-        SubModule = Artifact `sub_module` ModuleName,
-        code_gen.file(SubModule, []-[],
-            [decl("func char_prop(int) = " ++ Type ++ " is semidet" , [])],
-            Facts, IO0, IO1),
-        FQN = SubModule ^ a_module_name,
-        IncImps = [include(FQN)] % , import(FQN)]
-    ),
-    SubGen("name", "string", process_name, NameIncImps, !IO),
-    SubGen("gc",   "gc",     process_gc,   GCIncImps,   !IO),
-    IfaceIncImps = NameIncImps ++ GCIncImps,
-    code_gen.file(Artifact, IfaceIncImps-[], [], [], !IO).
 
 %----------------------------------------------------------------------------%
 %----------------------------------------------------------------------------%
