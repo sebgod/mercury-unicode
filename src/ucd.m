@@ -27,16 +27,20 @@
 
 %----------------------------------------------------------------------------%
 
-    % ucd.script_charset(Script) = Charset:
-    %   Charset unifies with the condensed set of all valid chars from the
-    %   given Unicode script.
+    % det_script_charset(Script) = Charset:
     %
-    %   Throws an exception iff the script contains no characters
-    %   (not all scripts have Unicode characters assigned).
-:- func script_charset(sc) = charset is det.
+    % Charset unifies with the condensed set of all valid chars from the given
+    % Unicode script.
+    %
+    % Throws an exception iff the script contains no characters
+    % (not all scripts have Unicode characters assigned).
+    %
+:- func det_script_charset(sc) = charset is det.
 
     % ucd.char_block(Char) = Block:
-    %   Block unifies with the Unicode character block containing the Char.
+    %
+    % Block unifies with the Unicode character block containing the Char.
+    %
 :- func char_block(char) = blk is det.
 
 %----------------------------------------------------------------------------%
@@ -46,10 +50,9 @@
 
 :- import_module int.  % for block range comparison
 :- import_module list.
-:- import_module pair.
 :- import_module require.
 :- import_module solutions.
-:- import_module string.
+:- import_module string.  % for format/2
 
 :- import_module ucd.blocks.
 :- import_module ucd.scripts.
@@ -57,13 +60,9 @@
 
 %----------------------------------------------------------------------------%
 
-script_charset(Script) = Charset :-
+det_script_charset(Script) = Charset :-
     ( if ScriptRange = script_range(Script) then
-        Charset = list.foldl(
-            (func(Range, Charset0) =
-                union(Charset0, charset_from_range(Range))),
-            ScriptRange,
-            charset.init)
+        Charset = charset_from_range(ScriptRange)
     else
         sc_alias(Script, ScriptName),
         unexpected($file, $pred,
@@ -76,12 +75,13 @@ script_charset(Script) = Charset :-
     % of the char and use that index to refer to a bucket of matching ranges
     % should be the most efficient. This table could be pre-generated.
 char_block(Char) = CharBlock :-
-    CharVal = to_int(Char),
+    Codepoint = to_int(Char),
+    Plane = Codepoint >> 16,
     solutions(
         (pred(Block::out) is nondet :-
-            block_range(Block, Start, End),
-            CharVal >= Start,
-            CharVal =< End
+            block_range(Block, Plane, Start, End),
+            Codepoint >= Start,
+            Codepoint =< End
         ),
         Blocks),
     CharBlock = ( if Blocks = [SingleBlock] then SingleBlock else nb ).

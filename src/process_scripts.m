@@ -24,7 +24,7 @@
 :- implementation.
 
 :- import_module char.
-:- import_module charset.
+:- import_module codepoint_range.
 :- import_module code_gen.
 :- import_module exception.
 :- import_module io.
@@ -43,38 +43,30 @@
 
 %----------------------------------------------------------------------------%
 
-:- pred parse_script_range : parser_pred(sc, set(codepoint_range)).
+:- pred parse_script_range : parser_pred(sc, set(pair(int))).
 :- mode parse_script_range `with_inst` parser2_pred.
 
 parse_script_range(!Map) -->
-    (   ['#'] -> junk
-    ;   ws    -> { true }
-    ;   char_range(Start, End),
+    ( if
+        ['#']
+    then
+        junk
+    else if
+        ws
+    then
+        { true }
+    else
+        char_range(Start, End),
         separator,
         value_name_no_ws(ScriptName),
-        ws, ['#'],
+        ws,
+        ['#'],
         junk,
         {
             sc_alias(Script, ScriptName),
             add_or_update(Script, Start-End, !Map)
         }
     ).
-
-:- func to_compact_list(set(codepoint_range)) = list(codepoint_range).
-
-to_compact_list(Ranges) = Compacted :-
-    Sorted = to_sorted_list(Ranges),
-    Compacted = list.foldl((func(Range, Compacted0) =
-        ( if
-            Compacted0 = [PrevStart-PrevEnd | CompactedR],
-            Range = Start-End,
-            PrevEnd = Start - 1
-        then
-            [PrevStart-End | CompactedR]
-        else
-            [Range | Compacted0]
-        )
-    ), Sorted, []).
 
 process_scripts(Artifact, !IO) :-
     ucd_file_parser.file(Artifact ^ a_input, parse_script_range, Scripts,
@@ -83,19 +75,25 @@ process_scripts(Artifact, !IO) :-
         (func(Script, Ranges, RangeSwitch0) = [Fact | RangeSwitch0] :-
             ScriptName = atom_to_string(Script),
             list.foldl2(
-                (pred(Range::in, S0::in, S::out, I0::in, I::out) is det :-
+                (pred(Range::in, !.S::in, !:S::out, I0::in, I::out) is det :-
                     I = I0 + 1,
                     Range = Start-End,
                     Elem = format("0x%x-0x%x", [i(Start), i(End)]),
-                    S =
-                        ( if S0 = "" then
+                    !:S =
+                        ( if !.S = "" then
                             Elem
-                        else if I mod 4 = 0 then
-                            Elem ++ ",\n    " ++ S0
+                        else if I mod 3 = 0 then
+                            Elem ++ ",\n    " ++ !.S
                         else
-                            Elem ++ ", " ++ S0
+                            Elem ++ ", " ++ !.S
                         )
-                ), to_compact_list(Ranges), "", FactItems, 2, _),
+                ),
+                codepoint_range_from_set(Ranges),
+                "",
+                FactItems,
+                0,
+                _
+            ),
             Fact = s(format("script_range(%s)=[%s]",
                 [s(ScriptName), s(FactItems)]))
         ), Scripts, []),
@@ -104,7 +102,13 @@ process_scripts(Artifact, !IO) :-
         decl("func script_range(sc) = script_range",
             [fun_mode("script_range", (semidet), ["in"], "out")])
     ],
-    code_gen.file(Artifact, []-[], ScriptDecls, RangeSwitch, !IO).
+    code_gen.file(
+        Artifact,
+        [import("pair")]-[],
+        ScriptDecls,
+        RangeSwitch,
+        !IO
+    ).
 
 %----------------------------------------------------------------------------%
 %----------------------------------------------------------------------------%

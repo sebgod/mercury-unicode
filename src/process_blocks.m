@@ -25,7 +25,6 @@
 
 :- import_module code_gen.
 :- import_module char.
-:- import_module charset.
 :- import_module exception.
 :- import_module int.
 :- import_module io.
@@ -48,40 +47,63 @@
 normalize_block_name(Name) = Norm :-
     Parts = string.words_separator(
         (pred(Char::in) is semidet :- member(Char, [' ', '-', '_'])),
-        Name),
+        Name
+    ),
     Norm = string.join_list("_", list.map(string.capitalize_first, Parts)).
 
-:- pred parse_block_range : parser_pred(blk, codepoint_range).
+:- pred parse_block_range : parser_pred(blk, pair(int)).
 :- mode parse_block_range `with_inst` parser2_pred.
 
 parse_block_range(!Map) -->
-    (   ['#'] -> junk
-    ;   ws    -> { true }
-    ;   char_range(Start, End),
+    ( if
+        ['#']
+    then
+        junk
+    else if
+        ws
+    then
+        { true }
+    else
+        char_range(Start, End),
         separator,
         not_eol_or_comment(BlockName),
         junk,
         {
-            NormalizedBlockName = normalize_block_name(BlockName),
-            blk_alias(Block, NormalizedBlockName),
-            !:Map = !.Map^elem(Block) := Start-End
+            blk_alias(Block, normalize_block_name(BlockName)),
+            !:Map = !.Map ^ elem(Block) := Start-End
         }
     ).
 
 process_blocks(Artifact, !IO) :-
     ucd_file_parser.file(Artifact ^ a_input, parse_block_range, Blocks, !IO),
     BlockRange = "block_range",
-    map.foldr((pred(Block::in, Range::in, RangeSwitch0::in, RangeSwitch1::out)
-        is det :-
-            BlockName = atom_to_string(Block),
-            Range = Start-End,
-            RangeSwitch1 = [s(format("%s(%s, %d, %d)", [
-                s(BlockRange), s(BlockName), i(Start), i(End)]))
-                | RangeSwitch0]
-        ), Blocks, [], RangeSwitch),
-    RangeDecl = decl(format("pred %s(blk, int, int)", [s(BlockRange)]),
-        [pred_mode(BlockRange, (semidet), ["in",  "out", "out"]),
-         pred_mode(BlockRange, (multi),   ["out", "out", "out"])
+    map.foldr(
+        (pred(Block::in, Range::in,
+            !.RangeSwitch::in, !:RangeSwitch::out) is det :-
+                BlockName = atom_to_string(Block),
+                Range = Start-End,
+                !:RangeSwitch = [
+                    s(format("%s(%s, %d, 0x%x, 0x%x)",
+                        [s(BlockRange),
+                         s(BlockName),
+                         i(Start >> 16),
+                         i(Start), i(End)
+                        ])
+                    )
+                    | !.RangeSwitch
+                ]
+        ),
+        Blocks,
+        [],
+        RangeSwitch),
+    RangeDecl = decl(format("pred %s(blk, int, int, int)", [s(BlockRange)]),
+        [pred_mode(BlockRange, (semidet), ["in",  "out", "out", "out"]),
+         pred_mode(BlockRange, (semidet), ["in",  "in",  "out", "out"]),
+         pred_mode(BlockRange, (semidet), ["out", "in",  "in",  "in" ]),
+         pred_mode(BlockRange, (semidet), ["out", "in",  "in",  "out"]),
+         pred_mode(BlockRange, (semidet), ["out", "in",  "out", "in" ]),
+         pred_mode(BlockRange, (nondet),  ["out", "in",  "out", "out"]),
+         pred_mode(BlockRange, (multi),   ["out", "out", "out", "out"])
         ]),
     code_gen.file(Artifact, []-[], [RangeDecl], RangeSwitch, !IO).
 
